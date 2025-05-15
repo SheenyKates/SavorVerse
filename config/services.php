@@ -29,4 +29,10 @@ return [
         'base_uri' => 'https://translation.googleapis.com/language/translate/v2',
         'key'      => env('GOOGLE_TRANSLATE_KEY'),
     ],
+    'google' => [
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    'redirect' => env('GOOGLE_REDIRECT_URI'),
+],
+
 ];

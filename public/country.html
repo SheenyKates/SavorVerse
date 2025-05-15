@@ -1,33 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Select Your Country</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SavorVerse - Choose Your Country</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- Reuse home page header here -->
   <header class="site-header">
-    <div class="container header-inner">
+    <div class="header-inner container">
       <div class="brand">
-        <img src="logo-icon.png" class="brand-logo" alt="logo" />
-        <div class="wordmark">
-          <span class="wordmark-savor">Savor</span><span class="wordmark-verse">Verse</span>
+        <img src="logo2.png" alt="SavorVerse logo" class="brand-logo" />
+        <div>
+          <div class="wordmark">
+            <span class="wordmark-savor">Savor</span><span class="wordmark-verse">Verse</span>
+          </div>
+          <div class="tagline">EVERY CRAVING. EVERY CUISINE. ALL IN ONE VERSE.</div>
         </div>
       </div>
-      <button id="logout-btn" class="btn-flat">Log Out</button>
+      <nav class="nav" aria-label="Main navigation">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="home.html">HOME</a></li>
+          <li class="nav-item"><a href="favorites.html">FAVORITES</a></li>
+          <li class="nav-item dropdown">
+            <a href="#" class="dropbtn">CATEGORY ▾</a>
+            <ul class="dropdown-content" style="display:none;">
+              <li><a href="#" data-category="pork">PORK</a></li>
+              <li><a href="#" data-category="beef">BEEF</a></li>
+              <li><a href="#" data-category="chicken">CHICKEN</a></li>
+              <li><a href="#" data-category="seafood">SEAFOOD</a></li>
+              <li><a href="#" data-category="vegetables">VEGETABLES</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a href="#" id="explore-more-btn">EXPLORE MORE</a></li>
+          <li class="nav-item"><a href="about.html">ABOUT US</a></li>
+        </ul>
+      </nav>
+      <div class="user-icon-container" title="User Profile">
+        <img src="user-icon.png" alt="User Icon" class="user-icon-img" />
+      </div>
     </div>
   </header>
 
-  <main>
-    <section>
-      <h2>Select Your Country</h2>
-      <select id="country-select">
-        <option value="">-- Pick a country --</option>
-      </select>
-      <button id="country-next" class="btn-primary" disabled>Next</button>
-    </section>
+  <main id="country-section" class="container">
+    <h2>Select Your Country</h2>
+    <select id="country-select" name="country" required>
+      <option value="" disabled selected>Select a country</option>
+      <option value="American">American</option>
+      <option value="British">British</option>
+      <option value="Canadian">Canadian</option>
+      <option value="Chinese">Chinese</option>
+      <option value="Dutch">Dutch</option>
+      <option value="Egyptian">Egyptian</option>
+      <option value="French">French</option>
+      <option value="Greek">Greek</option>
+      <option value="Indian">Indian</option>
+      <option value="Irish">Irish</option>
+      <option value="Italian">Italian</option>
+      <option value="Jamaican">Jamaican</option>
+      <option value="Japanese">Japanese</option>
+      <option value="Kenyan">Kenyan</option>
+      <option value="Malaysian">Malaysian</option>
+      <option value="Mexican">Mexican</option>
+      <option value="Moroccan">Moroccan</option>
+      <option value="Polish">Polish</option>
+      <option value="Portuguese">Portuguese</option>
+      <option value="Russian">Russian</option>
+      <option value="Spanish">Spanish</option>
+      <option value="Thai">Thai</option>
+      <option value="Tunisian">Tunisian</option>
+      <option value="Turkish">Turkish</option>
+      <option value="Unknown">Unknown</option>
+      <option value="Vietnamese">Vietnamese</option>
+    </select>
+
+    <button id="country-next" disabled>Next</button>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2025 SavorVerse. All rights reserved.</p>
+      <nav aria-label="Footer navigation">
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy Policy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    const countrySelect = document.getElementById('country-select');
+    const nextBtn = document.getElementById('country-next');
+
+    countrySelect.addEventListener('change', () => {
+      nextBtn.disabled = !countrySelect.value;
+    });
+
+    nextBtn.addEventListener('click', () => {
+      const selectedCountry = countrySelect.value;
+      if (selectedCountry) {
+        localStorage.setItem('sv_country', selectedCountry);
+        window.location.href = 'home.html';
+      }
+    });
+  </script>
 </body>
 </html>

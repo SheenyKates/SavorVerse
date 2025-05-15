@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welcome - SavorVerse</title>
+</head>
+<body>
+    
+  <div class="welcome-container">
+  <h1>Welcome, <span id="user-name"></span>!</h1>
+  <p>Every craving. Every cuisine. All in one verse.</p>
+  <button id="start-btn">Get Started</button>
+</div>
+
+  <script>
+    // Assuming user info is stored in localStorage after login
+    const user = JSON.parse(localStorage.getItem('sv_user'));
+    document.getElementById('user-name').textContent = user?.name || 'Food Lover';
+
+    document.getElementById('start-btn').addEventListener('click', () => {
+      window.location.href = 'country.html';
+    });
+  </script>
+</body>
+</html>

@@ -1,58 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Home — Savor Verse</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SavorVerse - Home</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Header toggles guest/user nav -->
+
+  <!-- Home Page Header -->
   <header class="site-header">
-    <div class="container header-inner">
+    <div class="header-inner container">
       <div class="brand">
-        <img src="logo2.png" class="brand-logo" alt="logo" />
-        <div class="wordmark">
-          <span class="wordmark-savor">Savor</span><span class="wordmark-verse">Verse</span>
-        </div>
-        <p class="tagline">EVERY CRAVING. EVERY CUISINE. ALL IN ONE VERSE.</p>
-      </div>
-      <nav id="nav-user" class="nav">
-        <a href="home.html">Home</a>
-        <a href="about.html">About Us</a>
-        <a href="favorites.html">Favorites</a>
-        <div class="dropdown">
-          <button class="dropdown-toggle">Category ▾</button>
-          <div class="dropdown-menu">
-            <a href="#" data-cat="Pork">Pork</a>
-            <a href="#" data-cat="Chicken">Chicken</a>
-            <a href="#" data-cat="Beef">Beef</a>
-            <a href="#" data-cat="Seafood">Seafood</a>
-            <a href="#" data-cat="Vegetarian">Vegetables</a>
+        <img src="logo2.png" alt="SavorVerse logo" class="brand-logo" />
+        <div>
+          <div class="wordmark">
+            <span class="wordmark-savor">Savor</span><span class="wordmark-verse">Verse</span>
           </div>
+          <div class="tagline">EVERY CRAVING. EVERY CUISINE. ALL IN ONE VERSE.</div>
         </div>
-        <button id="logout-btn" class="btn-flat">Log Out</button>
+      </div>
+
+      <nav class="nav" aria-label="Main navigation">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="home.html">HOME</a></li>
+          <li class="nav-item"><a href="favorites.html">FAVORITES</a></li>
+
+          <li class="nav-item dropdown">
+            <a href="#" class="dropbtn">CATEGORY ▾</a>
+            <ul class="dropdown-content">
+              <li><a href="#" data-category="pork">PORK</a></li>
+              <li><a href="#" data-category="beef">BEEF</a></li>
+              <li><a href="#" data-category="chicken">CHICKEN</a></li>
+              <li><a href="#" data-category="seafood">SEAFOOD</a></li>
+              <li><a href="#" data-category="vegetables">VEGETABLES</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item"><a href="#" id="explore-more-btn">EXPLORE MORE</a></li>
+          <li class="nav-item"><a href="about.html">ABOUT US</a></li>
+        </ul>
       </nav>
+
+      <div class="user-icon-container" title="User Profile">
+        <img src="user-icon.png" alt="User Icon" class="user-icon-img" />
+      </div>
     </div>
   </header>
 
-  <main>
-    <section id="meals-section">
-      <h2 id="meals-heading">Category</h2>
-      <div id="meals-container" class="card-grid"></div>
+  <main class="container">
+    <h1 id="welcome-message">Hello, Guest!</h1>
+
+    <section id="meal-categories" class="button-grid">
+      <button data-category="pork">PORK</button>
+      <button data-category="beef">BEEF</button>
+      <button data-category="chicken">CHICKEN</button>
+      <button data-category="seafood">SEAFOOD</button>
+      <button data-category="vegetables">VEGETABLES</button>
+    </section>
+
+    <section id="meals-section" class="card-grid">
+      <!-- Meals will load here -->
     </section>
   </main>
 
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="container">
-      <p>© 2025 Savor Verse. All rights reserved.</p>
-      <nav>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms of Service</a>
+      <p>&copy; 2025 SavorVerse. All rights reserved.</p>
+      <nav aria-label="Footer navigation">
+        <a href="about.html">About Us</a>
         <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy Policy</a>
       </nav>
     </div>
   </footer>
 
-  <script src="script.js"></script>
 </body>
 </html>
