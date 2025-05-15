@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Home — Savor Verse</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Header toggles guest/user nav -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="logo2.png" class="brand-logo" alt="logo" />
+        <div class="wordmark">
+          <span class="wordmark-savor">Savor</span><span class="wordmark-verse">Verse</span>
+        </div>
+        <p class="tagline">EVERY CRAVING. EVERY CUISINE. ALL IN ONE VERSE.</p>
+      </div>
+      <nav id="nav-user" class="nav">
+        <a href="home.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="favorites.html">Favorites</a>
+        <div class="dropdown">
+          <button class="dropdown-toggle">Category ▾</button>
+          <div class="dropdown-menu">
+            <a href="#" data-cat="Pork">Pork</a>
+            <a href="#" data-cat="Chicken">Chicken</a>
+            <a href="#" data-cat="Beef">Beef</a>
+            <a href="#" data-cat="Seafood">Seafood</a>
+            <a href="#" data-cat="Vegetarian">Vegetables</a>
+          </div>
+        </div>
+        <button id="logout-btn" class="btn-flat">Log Out</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="meals-section">
+      <h2 id="meals-heading">Category</h2>
+      <div id="meals-container" class="card-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2025 Savor Verse. All rights reserved.</p>
+      <nav>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

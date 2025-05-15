@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Select Your Country</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="logo-icon.png" class="brand-logo" alt="logo" />
+        <div class="wordmark">
+          <span class="wordmark-savor">Savor</span><span class="wordmark-verse">Verse</span>
+        </div>
+      </div>
+      <button id="logout-btn" class="btn-flat">Log Out</button>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>Select Your Country</h2>
+      <select id="country-select">
+        <option value="">-- Pick a country --</option>
+      </select>
+      <button id="country-next" class="btn-primary" disabled>Next</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
