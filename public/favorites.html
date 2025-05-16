@@ -3,32 +3,106 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SavorVerse - Favorites</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Savor Verse - Favorites</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- Header same as home page -->
-  <!-- You can reuse the same header HTML -->
+  <!-- Header -->
+  <header>
+    <div class="header-container">
 
-  <main class="container">
-    <h1>Your Favorite Dishes</h1>
-    <section id="favorites-list" class="card-grid">
-      <!-- Favorite dishes will load here -->
+      <!-- Logo + App Name -->
+      <div class="logo-appname">
+        <img src="logo2.png" alt="Savor Verse Logo" class="logo" />
+        <h1 class="app-name">Savor<span class="verse-highlight">Verse</span></h1>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="main-nav">
+        <ul class="nav-links">
+          <li><a href="home.html" class="nav-link">HOME</a></li>
+          <li><a href="category.html" class="nav-link">CATEGORY</a></li>
+          <li><a href="favorites.html" class="nav-link active">FAVORITES</a></li>
+          <li><a href="exploremore.html" class="nav-link">EXPLORE MORE</a></li>
+          <li><a href="aboutus.html" class="nav-link">ABOUT US</a></li>
+        </ul>
+      </nav>
+
+      <!-- User Icon -->
+      <div id="user-icon" class="user-icon" tabindex="0" aria-label="User menu">
+        <img src="user-icon.svg" alt="User Icon" />
+        <div id="user-dropdown" class="dropdown hidden">
+          <button id="logout-btn">Log Out</button>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="tagline">Every craving. Every cuisine. All in one verse.</p>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="favorites-section">
+      <h2>Your Favorites</h2>
+      <div class="favorites-gallery">
+        <article class="dish-card">
+          <img src="favorite-dish1.jpg" alt="Favorite Dish 1" />
+          <h4>Lechon</h4>
+          <button class="favorite-btn" aria-label="Remove from favorites" title="Remove from favorites">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M17 3H7C5.89543 3 5 3.89543 5 5V19L12 16L19 19V5C19 3.89543 18.1046 3 17 3Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </article>
+        <article class="dish-card">
+          <img src="favorite-dish2.jpg" alt="Favorite Dish 2" />
+          <h4>Paella</h4>
+          <button class="favorite-btn" aria-label="Remove from favorites" title="Remove from favorites">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M17 3H7C5.89543 3 5 3.89543 5 5V19L12 16L19 19V5C19 3.89543 18.1046 3 17 3Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </article>
+      </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <p>&copy; 2025 SavorVerse. All rights reserved.</p>
-      <nav aria-label="Footer navigation">
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact</a>
-        <a href="privacy.html">Privacy Policy</a>
-      </nav>
+  <footer>
+    <div class="footer-container">
+      <p>Follow us on:</p>
+      <div class="social-icons">
+        <a href="#"><img src="icon-facebook.svg" alt="Facebook" /></a>
+        <a href="#"><img src="icon-instagram.svg" alt="Instagram" /></a>
+        <a href="#"><img src="icon-twitter.svg" alt="Twitter" /></a>
+      </div>
     </div>
   </footer>
 
+  <script src="script.js"></script>
 </body>
 </html>

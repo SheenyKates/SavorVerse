@@ -2,67 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Favorite;
-use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
-    /**
-     * List the current user’s favorites.
-     */
-    public function index()
-{
-    /** @var \App\Models\User $user */
-    $user = Auth::user();
+    // Simulate database using session or static array
+    public function index(Request $request)
+    {
+        $favorites = session()->get('favorites', []);
+        return response()->json($favorites);
+    }
 
-    $favs = $user
-        ->favorites()
-        ->orderBy('created_at', 'desc')
-        ->get(['meal_id','meal_name','meal_thumb']);
-
-    return response()->json(['favorites' => $favs]);
-}
-
-
-    /**
-     * Add a recipe to favorites.
-     */
     public function store(Request $request)
-{
-    /** @var \App\Models\User $user */
-    $user = Auth::user();
+    {
+        $id = $request->input('id');
 
-    $data = $request->validate([
-      // …
-    ]);
+        if (!$id) {
+            return response()->json(['error' => 'Dish ID is required'], 400);
+        }
 
-    $fav = $user->favorites()->firstOrCreate(
-      ['meal_id' => $data['meal_id']],
-      $data
-    );
+        $favorites = session()->get('favorites', []);
+        if (!in_array($id, $favorites)) {
+            $favorites[] = $id;
+            session()->put('favorites', $favorites);
+        }
 
-    return response()->json(['favorite' => $fav], 201);
-}
+        return response()->json(['message' => 'Added to favorites', 'favorites' => $favorites]);
+    }
 
+    public function destroy(Request $request)
+    {
+        $id = $request->input('id');
+        $favorites = session()->get('favorites', []);
 
-    /**
-     * Remove a recipe from favorites.
-     */
-    /**
- * Remove a recipe from favorites.
- */
-public function destroy($id)
-{
-    /** @var \App\Models\User $user */
-    $user = Auth::user();
+        if (($key = array_search($id, $favorites)) !== false) {
+            unset($favorites[$key]);
+            session()->put('favorites', array_values($favorites));
+        }
 
-    $deleted = $user
-        ->favorites()
-        ->where('meal_id', $id)
-        ->delete();
-
-    return response()->json(['deleted' => (bool) $deleted]);
-}
-
+        return response()->json(['message' => 'Removed from favorites', 'favorites' => $favorites]);
+    }
 }

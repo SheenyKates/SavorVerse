@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SavorVerse - Dish Details</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo-appname">
+        <img src="logo2.png" alt="SavorVerse Logo" class="logo" />
+        <h1 class="app-name">Savor<span class="verse-highlight">Verse</span></h1>
+      </div>
+
+      <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="home.html" class="nav-link">HOME</a></li>
+          <li><a href="category.html" class="nav-link">CATEGORY</a></li>
+          <li><a href="favorites.html" class="nav-link">FAVORITES</a></li>
+          <li><a href="exploremore.html" class="nav-link">EXPLORE MORE</a></li>
+          <li><a href="aboutus.html" class="nav-link">ABOUT US</a></li>
+        </ul>
+      </nav>
+
+      <!-- User Icon and Dropdown Wrapper -->
+      <div class="user-menu-wrapper">
+        <div class="user-icon" id="userIcon" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="User menu">👤</div>
+        <div id="user-dropdown" class="dropdown hidden" role="menu" aria-hidden="true">
+          <button id="logout-btn" role="menuitem">Log Out</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="tagline">Every craving. Every cuisine. All in one verse.</p>
+  </header>
+
+  <main>
+    <section class="dish-detail-section">
+      <button id="back-btn" class="back-btn" aria-label="Go back to previous page">← Back</button>
+      <h2 id="dish-title">Dish Name</h2>
+
+      <div class="dish-detail-content">
+        <img id="dish-image" src="" alt="Dish Image" class="dish-image" />
+
+        <div class="dish-info">
+          <h3>Ingredients</h3>
+          <ul id="ingredients-list">
+            <!-- Ingredients dynamically populated -->
+          </ul>
+
+          <h3>Instructions</h3>
+          <p id="instructions-text">
+            <!-- Instructions dynamically populated -->
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <p>Follow us on:</p>
+      <div class="social-icons">
+        <a href="#"><img src="icon-facebook.svg" alt="Facebook" /></a>
+        <a href="#"><img src="icon-instagram.svg" alt="Instagram" /></a>
+        <a href="#"><img src="icon-twitter.svg" alt="Twitter" /></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

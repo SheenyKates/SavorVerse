@@ -2,7 +2,7 @@
 
 return [
 
-    // … your existing entries …
+    // ... other Laravel services like mail, etc.
 
     'themealdb' => [
         'base_uri' => env('THEMEALDB_URL'),
@@ -10,6 +10,11 @@ return [
 
     'restcountries' => [
         'base_uri' => env('RESTCOUNTRIES_URL'),
+    ],
+
+    'spoonacular' => [
+        'api_key' => env('SPOONACULAR_API_KEY'),
+        'base_uri' => 'https://api.spoonacular.com/food/',
     ],
 
     'edamam' => [
@@ -29,10 +34,5 @@ return [
         'base_uri' => 'https://translation.googleapis.com/language/translate/v2',
         'key'      => env('GOOGLE_TRANSLATE_KEY'),
     ],
-    'google' => [
-    'client_id' => env('GOOGLE_CLIENT_ID'),
-    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-    'redirect' => env('GOOGLE_REDIRECT_URI'),
-],
 
 ];

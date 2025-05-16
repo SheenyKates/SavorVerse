@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Savor Verse - Home</title>
+  <title>Savor Verse - Explore More</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -21,19 +21,18 @@
       <!-- Navigation -->
       <nav class="main-nav">
         <ul class="nav-links">
-          <li><a href="home.html" class="nav-link active">HOME</a></li>
+          <li><a href="home.html" class="nav-link">HOME</a></li>
           <li><a href="category.html" class="nav-link">CATEGORY</a></li>
           <li><a href="favorites.html" class="nav-link">FAVORITES</a></li>
-          <li><a href="exploremore.html" class="nav-link">EXPLORE MORE</a></li>
+          <li><a href="exploremore.html" class="nav-link active">EXPLORE MORE</a></li>
           <li><a href="aboutus.html" class="nav-link">ABOUT US</a></li>
         </ul>
       </nav>
 
-     <div class="user-icon" id="userIcon">👤</div>
+      <div class="user-icon" id="userIcon">👤</div>
 <div id="user-dropdown" class="dropdown hidden">
   <button id="logout-btn">Log Out</button>
 </div>
-
 
     </div>
 
@@ -42,36 +41,11 @@
 
   <!-- Main Content -->
   <main>
-    <section class="home-header">
-      <h2>HOME</h2>
-      <p>Discover and enjoy diverse dishes from your chosen country and beyond.</p>
-    </section>
-
-    <section class="recent-dishes">
-      <h3>Recent Dishes</h3>
-      <div class="dish-gallery">
-        <!-- Sample dishes -->
-        <article class="dish-card">
-          <img src="dish1.jpg" alt="Dish 1" />
-          <h4>Adobo</h4>
-          <button class="favorite-btn" aria-label="Add to favorites">❤</button>
-        </article>
-        <article class="dish-card">
-          <img src="dish2.jpg" alt="Dish 2" />
-          <h4>Sushi</h4>
-          <button class="favorite-btn" aria-label="Add to favorites">❤</button>
-        </article>
-      </div>
-    </section>
-
-    <section class="diverse-dishes">
-      <h3>Diverse Dishes from Around the World</h3>
-      <p>Explore authentic traditional dishes from many cultures — all in one place.</p>
-      <div class="image-gallery">
-        <img src="dish3.jpg" alt="Dish 3" />
-        <img src="dish4.jpg" alt="Dish 4" />
-        <img src="dish5.jpg" alt="Dish 5" />
-      </div>
+    <section class="explore-more-section">
+      <h2>Explore Dishes by Country</h2>
+      <ul id="country-list" class="country-list">
+        <!-- Countries will be dynamically loaded here -->
+      </ul>
     </section>
   </main>
 
@@ -87,6 +61,29 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const countryList = document.getElementById('country-list');
+
+      fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=list')
+        .then(response => response.json())
+        .then(data => {
+          const countries = data.meals;
+          countries.forEach(country => {
+            const li = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = `explore-category.html?country=${encodeURIComponent(country.strArea)}`;
+            link.textContent = country.strArea;
+            li.appendChild(link);
+            countryList.appendChild(li);
+          });
+        })
+        .catch(error => {
+          console.error('Error loading countries:', error);
+          countryList.textContent = 'Failed to load countries. Please try again later.';
+        });
+    });
+  </script>
+
 </body>
 </html>

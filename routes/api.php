@@ -1,41 +1,41 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RecipeController;
-use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\CountryController;
-use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ExploreController;
+use App\Http\Controllers\DishController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\RestCountryController;
+use App\Http\Controllers\RecipeUtilityController;
 
-// Country list endpoint
-Route::get('countries', [CountryController::class, 'index']);
+// 🔹 Country
+Route::get('/countries', [CountryController::class, 'index']);
 
-// Google OAuth login routes
-Route::get('login/google', [SocialAuthController::class, 'redirectToGoogle'])->name('login.google');
-Route::get('login/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+// 🔹 Dish Details
+Route::get('/dish/{id}', [DishController::class, 'show']);
 
-// Recipe-related routes grouped under 'recipes' prefix
-Route::prefix('recipes')->group(function () {
-    // 1. Get the 5 static categories for a country
-    Route::get('country/{country}/categories', [RecipeController::class, 'listCategories']);
-    
-    // 2. Get meals by country + category
-    Route::get('country/{country}/category/{category}', [RecipeController::class, 'getByCategory']);
-    
-    // 3. Get full recipe details
-    Route::get('detail/{id}', [RecipeController::class, 'getRecipeDetails']);
-    
-    // 4. Search recipes by name (optional country filter)
-    Route::get('search', [RecipeController::class, 'searchByName']);
+// 🔹 Explore (by Country + Category)
+Route::get('/explore/{country}/{category}', [ExploreController::class, 'byCountryAndCategory']);
+
+// 🔹 Home
+Route::get('/home/recent', [HomeController::class, 'recentDishes']);
+Route::get('/home/trivia', [HomeController::class, 'trivia']);
+
+// 🔹 REST Country Info
+Route::get('/country/info/{name}', [RestCountryController::class, 'show']);
+
+// 🔹 Favorites
+Route::prefix('favorites')->group(function () {
+    Route::get('/', [FavoriteController::class, 'index']);
+    Route::post('/add', [FavoriteController::class, 'store']);
+    Route::delete('/remove', [FavoriteController::class, 'destroy']);
 });
 
-// Favorites routes protected by Sanctum auth middleware
-Route::middleware('auth:sanctum')->group(function () {
-    // List current user’s favorites
-    Route::get('favorites', [FavoriteController::class, 'index']);
-    
-    // Add a recipe to favorites
-    Route::post('favorites', [FavoriteController::class, 'store']);
-    
-    // Remove a recipe from favorites
-    Route::delete('favorites/{id}', [FavoriteController::class, 'destroy']);
+// 🔹 Recipes Utility (search, detail, by category)
+Route::prefix('recipes')->group(function () {
+    Route::get('/country/{country}/categories', [RecipeUtilityController::class, 'listCategories']);
+    Route::get('/country/{country}/category/{category}', [RecipeUtilityController::class, 'getByCategory']);
+    Route::get('/detail/{id}', [RecipeUtilityController::class, 'getRecipeDetails']);
+    Route::get('/search', [RecipeUtilityController::class, 'searchByName']);
 });

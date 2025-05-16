@@ -1,12 +1,14 @@
-<?php
+<<?php
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller; 
 use App\Services\MealDbService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
-class RecipeController extends Controller
+
+class RecipeUtilityController extends Controller
 {
     protected MealDbService $mealDb;
 

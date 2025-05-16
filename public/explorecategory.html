@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Savor Verse - Explore Category</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+
+      <!-- Logo + App Name -->
+      <div class="logo-appname">
+        <img src="logo2.png" alt="Savor Verse Logo" class="logo" />
+        <h1 class="app-name">Savor<span class="verse-highlight">Verse</span></h1>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="main-nav">
+        <ul class="nav-links">
+          <li><a href="home.html" class="nav-link">HOME</a></li>
+          <li><a href="category.html" class="nav-link">CATEGORY</a></li>
+          <li><a href="favorites.html" class="nav-link">FAVORITES</a></li>
+          <li><a href="exploremore.html" class="nav-link active">EXPLORE MORE</a></li>
+          <li><a href="aboutus.html" class="nav-link">ABOUT US</a></li>
+        </ul>
+      </nav>
+
+      <div class="user-icon" id="userIcon">👤</div>
+<div id="user-dropdown" class="dropdown hidden">
+  <button id="logout-btn">Log Out</button>
+</div>
+
+    </div>
+
+    <p class="tagline">Every craving. Every cuisine. All in one verse.</p>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="explore-category-section">
+      <h2>Explore Dishes from <span id="country-name"></span></h2>
+
+      <div class="category-filter">
+        <label for="category-select">Choose a category:</label>
+        <select id="category-select" aria-label="Select Category">
+          <option value="" disabled selected>Select a category</option>
+          <option value="Pork">Pork</option>
+          <option value="Beef">Beef</option>
+          <option value="Chicken">Chicken</option>
+          <option value="Seafood">Seafood</option>
+          <option value="Vegetables">Vegetables</option>
+        </select>
+      </div>
+
+      <div id="dishes-container" class="dishes-container">
+        <!-- Dishes will be dynamically loaded here -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <p>Follow us on:</p>
+      <div class="social-icons">
+        <a href="#"><img src="icon-facebook.svg" alt="Facebook" /></a>
+        <a href="#"><img src="icon-instagram.svg" alt="Instagram" /></a>
+        <a href="#"><img src="icon-twitter.svg" alt="Twitter" /></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const country = urlParams.get('country') || 'Unknown';
+      const countryNameElem = document.getElementById('country-name');
+      const categorySelect = document.getElementById('category-select');
+      const dishesContainer = document.getElementById('dishes-container');
+
+      countryNameElem.textContent = country;
+
+      // Helper function to fetch and display dishes by country and category
+      function fetchDishes(area, category) {
+        dishesContainer.innerHTML = '<p>Loading dishes...</p>';
+
+        fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${encodeURIComponent(area)}`)
+          .then(response => response.json())
+          .then(data => {
+            if (!data.meals) {
+              dishesContainer.innerHTML = '<p>No dishes found for this country.</p>';
+              return;
+            }
+
+            // Filter by category if selected
+            let meals = data.meals;
+
+            if (category) {
+              // Unfortunately TheMealDB API doesn't filter by category and area together,
+              // so we filter client-side by fetching category and matching ids
+
+              fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${encodeURIComponent(category)}`)
+                .then(response => response.json())
+                .then(catData => {
+                  if (!catData.meals) {
+                    dishesContainer.innerHTML = '<p>No dishes found for this category.</p>';
+                    return;
+                  }
+                  const catMealIds = new Set(catData.meals.map(m => m.idMeal));
+                  meals = meals.filter(meal => catMealIds.has(meal.idMeal));
+
+                  displayDishes(meals);
+                });
+            } else {
+              displayDishes(meals);
+            }
+          })
+          .catch(error => {
+            dishesContainer.innerHTML = '<p>Error loading dishes. Please try again later.</p>';
+            console.error(error);
+          });
+      }
+
+      // Display dishes in the container
+      function displayDishes(meals) {
+        if (meals.length === 0) {
+          dishesContainer.innerHTML = '<p>No dishes match your filters.</p>';
+          return;
+        }
+        dishesContainer.innerHTML = '';
+        meals.forEach(meal => {
+          const dishCard = document.createElement('article');
+          dishCard.classList.add('dish-card');
+          dishCard.innerHTML = `
+            <img src="${meal.strMealThumb}" alt="${meal.strMeal}" />
+            <h4>${meal.strMeal}</h4>
+            <button class="favorite-btn" aria-label="Add to favorites" title="Add to favorites">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 3H7C5.89543 3 5 3.89543 5 5V19L12 16L19 19V5C19 3.89543 18.1046 3 17 3Z"
+                  stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+              </svg>
+            </button>
+          `;
+          dishesContainer.appendChild(dishCard);
+        });
+      }
+
+      // Initial fetch with no category filter
+      fetchDishes(country, '');
+
+      // Update dishes when category changes
+      categorySelect.addEventListener('change', () => {
+        fetchDishes(country, categorySelect.value);
+      });
+    });
+  </script>
+
+</body>
+</html>
