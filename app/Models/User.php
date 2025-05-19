@@ -14,7 +14,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'google_id', // add google_id here for social login
     ];
 
     protected $hidden = [

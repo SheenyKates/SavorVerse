@@ -3,31 +3,33 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Dish;
-use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 
 class DishSeeder extends Seeder
 {
     public function run()
     {
-        $categories = Category::pluck('id', 'name');
-
         $dishes = [
-            ['name' => 'Adobo', 'category' => 'Pork'],
-            ['name' => 'Menudo', 'category' => 'Pork'],
-            ['name' => 'Beef Kaldereta', 'category' => 'Beef'],
-            ['name' => 'Chicken Inasal', 'category' => 'Chicken'],
-            ['name' => 'Pinakbet', 'category' => 'Vegetables'],
-            ['name' => 'Sinigang na Isda', 'category' => 'Fish'],
+            [
+                'name' => 'Adobo',
+                'category' => 'Pork',
+                'thumbnail' => 'url-to-adobo-image',
+                'description' => 'A popular Filipino dish...',
+            ],
+            [
+                'name' => 'Sinigang',
+                'category' => 'Seafood',
+                'thumbnail' => 'url-to-sinigang-image',
+                'description' => 'A sour soup dish...',
+            ],
+            // Add more dishes here
         ];
 
         foreach ($dishes as $dish) {
-            Dish::create([
-                'name' => $dish['name'],
-                'category_id' => $categories[$dish['category']],
-                'ingredients' => json_encode(['Example ingredient 1', 'Example ingredient 2']),
-                'procedure' => json_encode(['Step 1', 'Step 2']),
-            ]);
+            DB::table('dishes')->insert(array_merge($dish, [
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]));
         }
     }
 }

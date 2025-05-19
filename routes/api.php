@@ -32,4 +32,3 @@ Route::prefix('favorites')->group(function () {
     Route::post('/add', [FavoriteController::class, 'store']);
     Route::delete('/remove', [FavoriteController::class, 'destroy']);
 });
-

@@ -2,38 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\MealDbService;
-use Illuminate\Support\Facades\Cache;
+use App\Services\MealService;
 
 class ExploreController extends Controller
 {
-    protected MealDbService $mealDb;
+    protected MealService $mealService;
 
-    public function __construct(MealDbService $mealDb)
+    public function __construct(MealService $mealService)
     {
-        $this->mealDb = $mealDb;
+        $this->mealService = $mealService;
+    }
+
+    public function byCountryAndCategory(string $country, string $category)
+    {
+        $meals = $this->mealService->getMealsByCountryAndCategory($country, $category);
+
+        return response()->json($meals);
     }
 
     public function listCategories(string $country)
-{
-    $categories = ['Pork', 'Beef', 'Chicken', 'Seafood', 'Vegetarian'];
-
-    return response()->json([
-        'country'    => $country,
-        'categories' => $categories,
-    ]);
-}
-
-    public function byCountryAndCategory(string $country, string $category)
-{
-    // Use $country directly as area
-    $cacheKey = "meals_{$country}_{$category}";
-
-    $meals = Cache::remember($cacheKey, now()->addHours(6), function () use ($country, $category) {
-        return $this->mealDb->filterByCategory($country, $category);
-    });
-
-    return response()->json($meals);
-}
-
+    {
+        $categories = $this->mealService->getCategoriesForCountry($country);
+        return response()->json($categories);
+    }
 }

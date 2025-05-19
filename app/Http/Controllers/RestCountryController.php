@@ -2,17 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Http;
+use App\Services\RestCountryService;
 
 class RestCountryController extends Controller
 {
-    public function show($name)
-    {
-        $response = Http::get("https://restcountries.com/v3.1/name/{$name}?fullText=true");
+    protected RestCountryService $restCountryService;
 
-        if ($response->successful() && isset($response->json()[0])) {
-            return response()->json($response->json()[0]);
+    public function __construct(RestCountryService $restCountryService)
+    {
+        $this->restCountryService = $restCountryService;
+    }
+
+    public function show(string $name)
+    {
+        $countryInfo = $this->restCountryService->getCountryInfo($name);
+
+        if ($countryInfo) {
+            return response()->json($countryInfo);
         }
 
         return response()->json(['error' => 'Country not found'], 404);

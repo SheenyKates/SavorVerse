@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Http;
+use App\Services\MealService;
 
 class DishController extends Controller
 {
+    protected MealService $mealService;
+
+    public function __construct(MealService $mealService)
+    {
+        $this->mealService = $mealService;
+    }
+
     public function show($id)
     {
-        $response = Http::get("https://www.themealdb.com/api/json/v1/1/lookup.php?i={$id}");
-
-        return response()->json($response->json()['meals'][0] ?? []);
+        $details = $this->mealService->getMealDetails($id);
+        return response()->json($details);
     }
 }
