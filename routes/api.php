@@ -7,7 +7,6 @@ use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\RestCountryController;
-use App\Http\Controllers\RecipeUtilityController;
 
 // 🔹 Country
 Route::get('/countries', [CountryController::class, 'index']);
@@ -17,6 +16,8 @@ Route::get('/dish/{id}', [DishController::class, 'show']);
 
 // 🔹 Explore (by Country + Category)
 Route::get('/explore/{country}/{category}', [ExploreController::class, 'byCountryAndCategory']);
+Route::get('/categories/for/{country}', [ExploreController::class, 'listCategories']);
+
 
 // 🔹 Home
 Route::get('/home/recent', [HomeController::class, 'recentDishes']);
@@ -32,10 +33,3 @@ Route::prefix('favorites')->group(function () {
     Route::delete('/remove', [FavoriteController::class, 'destroy']);
 });
 
-// 🔹 Recipes Utility (search, detail, by category)
-Route::prefix('recipes')->group(function () {
-    Route::get('/country/{country}/categories', [RecipeUtilityController::class, 'listCategories']);
-    Route::get('/country/{country}/category/{category}', [RecipeUtilityController::class, 'getByCategory']);
-    Route::get('/detail/{id}', [RecipeUtilityController::class, 'getRecipeDetails']);
-    Route::get('/search', [RecipeUtilityController::class, 'searchByName']);
-});

@@ -31,12 +31,12 @@
 
       <!-- User Icon -->
       <div class="user-menu-wrapper">
-      <div class="user-icon" id="userIcon" tabindex="0" aria-label="User menu">👤</div>
-      <div id="user-dropdown" class="dropdown hidden" role="menu" aria-hidden="true">
-        <button id="logout-btn" role="menuitem">Log Out</button>
+        <div class="user-icon" id="userIcon" tabindex="0" aria-label="User menu">👤</div>
+        <div id="user-dropdown" class="dropdown hidden" role="menu" aria-hidden="true">
+          <button id="logout-btn" role="menuitem">Log Out</button>
+        </div>
       </div>
     </div>
-
     <p class="tagline">Every craving. Every cuisine. All in one verse.</p>
   </header>
 
@@ -45,12 +45,17 @@
     <section class="category-selection">
       <h2>Choose a Category</h2>
       <ul class="category-list">
-        <li><a href="category-pork.html" class="category-link">Pork</a></li>
-        <li><a href="category-beef.html" class="category-link">Beef</a></li>
-        <li><a href="category-chicken.html" class="category-link">Chicken</a></li>
-        <li><a href="category-seafood.html" class="category-link">Seafood</a></li>
-        <li><a href="category-vegetables.html" class="category-link">Vegetables</a></li>
+        <li><button class="category-link">Pork</button></li>
+        <li><button class="category-link">Beef</button></li>
+        <li><button class="category-link">Chicken</button></li>
+        <li><button class="category-link">Seafood</button></li>
+        <li><button class="category-link">Vegetarian</button></li>
       </ul>
+    </section>
+
+    <section class="dishes-section">
+      <h3 id="dish-heading">Dishes will appear here</h3>
+      <div id="dishesContainer" class="dishes-container"></div>
     </section>
   </main>
 
@@ -66,6 +71,45 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const categoryButtons = document.querySelectorAll('.category-link');
+      const dishesContainer = document.getElementById('dishesContainer');
+      const heading = document.getElementById('dish-heading');
+      const selectedCountry = localStorage.getItem('selectedCountry') || 'Filipino';
+      const apiBase = 'http://localhost/api'; // Update to your backend base URL
+
+      categoryButtons.forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const category = btn.textContent.trim();
+          heading.textContent = `Dishes for ${selectedCountry} - ${category}`;
+
+          dishesContainer.innerHTML = '<p>Loading...</p>';
+          try {
+            const response = await fetch(`${apiBase}/recipes/country/${encodeURIComponent(selectedCountry)}/category/${encodeURIComponent(category)}`);
+            const data = await response.json();
+
+            if (!data || data.length === 0) {
+              dishesContainer.innerHTML = '<p>No dishes found.</p>';
+              return;
+            }
+
+            dishesContainer.innerHTML = data.map(dish => `
+              <article class="dish-card" data-id="${dish.idMeal}">
+                <img src="${dish.strMealThumb}" alt="${dish.strMeal}" />
+                <h4>${dish.strMeal}</h4>
+                <button class="favorite-btn" aria-label="Toggle favorite">♡</button>
+              </article>
+            `).join('');
+
+          } catch (error) {
+            dishesContainer.innerHTML = '<p>Error fetching dishes.</p>';
+            console.error(error);
+          }
+        });
+      });
+    });
+  </script>
+
 </body>
 </html>

@@ -14,6 +14,16 @@ class ExploreController extends Controller
         $this->mealDb = $mealDb;
     }
 
+    public function listCategories(string $country)
+{
+    $categories = ['Pork', 'Beef', 'Chicken', 'Seafood', 'Vegetarian'];
+
+    return response()->json([
+        'country'    => $country,
+        'categories' => $categories,
+    ]);
+}
+
     public function byCountryAndCategory(string $country, string $category)
 {
     // Use $country directly as area

@@ -5,8 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Savor Verse - Guest</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal.hidden {
+      display: none;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 400px;
+      text-align: center;
+    }
+    .country-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    .country-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      background-color: navy;
+      color: white;
+      cursor: pointer;
+    }
+    .country-btn:hover {
+      background-color: darkblue;
+    }
+  </style>
 </head>
 <body>
+
   <header>
     <div class="header-container">
       <div class="logo-appname">
@@ -15,9 +55,9 @@
       </div>
       <nav class="main-nav">
         <ul class="nav-links">
-          <li><a href="guest.html" class="nav-link active">Home</a></li>
+          <li><a href="guesthomepage.html" class="nav-link active">Home</a></li>
           <li><a href="aboutus.html" class="nav-link">About Us</a></li>
-          <li><button id="quickLoginBtn" class="nav-button">Quick Log In</button></li>
+          <li><button id="quick-login" class="nav-button">Quick Log In</button></li>
         </ul>
       </nav>
     </div>
@@ -32,6 +72,22 @@
     </section>
   </main>
 
+  <!-- MODALS -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-content">
+      <p>Are you sure you want to log in as guest?</p>
+      <button id="confirm-login">Yes</button>
+      <button id="cancel-login">No</button>
+    </div>
+  </div>
+
+  <div id="countryModal" class="modal hidden">
+    <div class="modal-content">
+      <p>Awesome! Pick which country you belong to:</p>
+      <div id="countryOptions" class="country-list"></div>
+    </div>
+  </div>
+
   <footer>
     <div class="footer-container">
       <p>Follow us on:</p>
@@ -43,6 +99,58 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    const apiBase = 'http://127.0.0.1:8000/api';
+
+    const quickLoginBtn = document.getElementById('quick-login');
+    const loginModal = document.getElementById('loginModal');
+    const confirmLogin = document.getElementById('confirm-login');
+    const cancelLogin = document.getElementById('cancel-login');
+    const countryModal = document.getElementById('countryModal');
+    const countryOptions = document.getElementById('countryOptions');
+
+    if (quickLoginBtn) {
+      quickLoginBtn.addEventListener('click', () => {
+        loginModal.classList.remove('hidden');
+      });
+    }
+
+    if (cancelLogin) {
+      cancelLogin.addEventListener('click', () => {
+        loginModal.classList.add('hidden');
+      });
+    }
+
+    if (confirmLogin) {
+      confirmLogin.addEventListener('click', () => {
+        loginModal.classList.add('hidden');
+        countryModal.classList.remove('hidden');
+        loadCountries();
+      });
+    }
+
+    function loadCountries() {
+      fetch(`${apiBase}/countries`)
+        .then(res => res.json())
+        .then(data => {
+          countryOptions.innerHTML = '';
+          data.forEach(area => {
+            const btn = document.createElement('button');
+            btn.textContent = area.strArea;
+            btn.className = 'country-btn';
+            btn.addEventListener('click', () => {
+              localStorage.setItem('userType', 'guest');
+              localStorage.setItem('selectedCountry', area.strArea);
+              window.location.href = 'category.html';
+            });
+            countryOptions.appendChild(btn);
+          });
+        })
+        .catch(err => {
+          countryOptions.innerHTML = '<p>Failed to load countries.</p>';
+          console.error(err);
+        });
+    }
+  </script>
 </body>
 </html>
