@@ -9,19 +9,19 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // User Registration
+    // Register new user
     public function register(Request $request)
     {
         $fields = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed', // expects password_confirmation
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
-            'password' => $fields['password'], // password auto-hashed by User model cast
+            'password' => $fields['password'], // hashed automatically via $casts
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -32,7 +32,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // User Login
+    // Login user
     public function login(Request $request)
     {
         $fields = $request->validate([
@@ -56,14 +56,13 @@ class AuthController extends Controller
         ]);
     }
 
-    // User Logout
+    // Logout user
     public function logout(Request $request)
     {
-        // Revoke current access token
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Logged out successfully.',
+            'message' => 'Logged out successfully',
         ]);
     }
 }

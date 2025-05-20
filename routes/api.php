@@ -7,6 +7,7 @@ use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\RestCountryController;
+use App\Http\Controllers\AuthController;
 
 // 🔹 Country
 Route::get('/countries', [CountryController::class, 'index']);
@@ -31,4 +32,13 @@ Route::prefix('favorites')->group(function () {
     Route::get('/', [FavoriteController::class, 'index']);
     Route::post('/add', [FavoriteController::class, 'store']);
     Route::delete('/remove', [FavoriteController::class, 'destroy']);
+});
+
+//AuthController
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
