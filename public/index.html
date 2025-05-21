@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SavorVerse</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-area">
+      <img src="logo2.png" alt="SavorVerse Logo" class="logo" />
+      <div class="text-group">
+        <h1 class="app-title">Savor<span class="highlight">Verse</span></h1>
+        <p class="tagline">Every craving. Every cuisine. All in one <span class="highlight">verse</span>.</p>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="#" class="nav-item active">HOME</a>
+      <a href="#" class="nav-item">ABOUT US</a>
+      <button class="login-btn" onclick="toggleForm()">Log in / Sign up</button>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <div class="hero-overlay">
+  <div class="hero-text-box">
+    <h2 class="hero-text">Where every country<br>serves a story on a plate.</h2>
+  </div>
+</div>
+
+
+
+    <!-- Sign Up Form -->
+    <div class="form-modal" id="signup-form">
+      <h2>Sign up</h2>
+      <input type="text" placeholder="Username" />
+      <input type="text" placeholder="Email" />
+      <input type="password" placeholder="Password" />
+      <input type="password" placeholder="Confirm Password" />
+      <button class="form-btn">Create Account</button>
+      <p class="login-text">Already have an account? <a href="#" onclick="switchToLogin()">Log in</a></p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="form-modal" id="login-form">
+      <h2>Log in</h2>
+      <input type="text" placeholder="Username" />
+      <input type="password" placeholder="Password" />
+      <button class="form-btn">Log in</button>
+    </div>
+  </main>
+
+  <script>
+    window.onload = function () {
+      document.getElementById("signup-form").style.display = 'none';
+      document.getElementById("login-form").style.display = 'none';
+    }
+
+    function toggleForm() {
+      document.getElementById("signup-form").style.display = 'block';
+      document.getElementById("login-form").style.display = 'none';
+    }
+
+    function switchToLogin() {
+      document.getElementById("signup-form").style.display = 'none';
+      document.getElementById("login-form").style.display = 'block';
+    }
+  </script>
+</body>
+</html>

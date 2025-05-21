@@ -17,24 +17,37 @@ use Illuminate\Session\Middleware\StartSession;
 // use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\EncryptCookies as MiddlewareEncryptCookies;
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as MiddlewarePreventRequestsDuringMaintenance;
+use Illuminate\Foundation\Http\Middleware\TrimStrings as MiddlewareTrimStrings;
+use Illuminate\Http\Middleware\TrustProxies as MiddlewareTrustProxies;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
 class Kernel extends HttpKernel
 {
+    /**
+     * The application's global HTTP middleware stack.
+     *
+     * @var array<int, class-string|string>
+     */
     protected $middleware = [
-        // Global middleware stack
-        TrustProxies::class,
+        MiddlewareTrustProxies::class,
         HandleCors::class,
-        PreventRequestsDuringMaintenance::class,
+        MiddlewarePreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
-        TrimStrings::class,
+        MiddlewareTrimStrings::class,
         ConvertEmptyStringsToNull::class,
     ];
 
+    /**
+     * The application's route middleware groups.
+     *
+     * @var array<string, array<int, class-string|string>>
+     */
     protected $middlewareGroups = [
         'web' => [
-            EncryptCookies::class,
+            MiddlewareEncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             // AuthenticateSession::class,
@@ -50,5 +63,5 @@ class Kernel extends HttpKernel
         ],
     ];
 
-    // rest of your code
+    // ...rest of your Kernel class...
 }
