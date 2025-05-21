@@ -21,7 +21,6 @@ use Illuminate\Cookie\Middleware\EncryptCookies as MiddlewareEncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as MiddlewarePreventRequestsDuringMaintenance;
 use Illuminate\Foundation\Http\Middleware\TrimStrings as MiddlewareTrimStrings;
 use Illuminate\Http\Middleware\TrustProxies as MiddlewareTrustProxies;
-use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
 class Kernel extends HttpKernel
@@ -57,7 +56,6 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             SubstituteBindings::class,
         ],

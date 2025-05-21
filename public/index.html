@@ -29,43 +29,40 @@
   </div>
 </div>
 
+<p id="signup-success" style="display: none; color: green; text-align: center;">
+  ✅ Account successfully created! Please log in.
+</p>
 
 
-    <!-- Sign Up Form -->
-    <div class="form-modal" id="signup-form">
-      <h2>Sign up</h2>
-      <input type="text" placeholder="Username" />
-      <input type="text" placeholder="Email" />
-      <input type="password" placeholder="Password" />
-      <input type="password" placeholder="Confirm Password" />
-      <button class="form-btn">Create Account</button>
-      <p class="login-text">Already have an account? <a href="#" onclick="switchToLogin()">Log in</a></p>
-    </div>
+<!-- ✅ Sign-Up Form with IDs -->
+<div class="form-modal" id="signup-form">
+  <h2>Sign up</h2>
+  <input type="text" id="signup-name" placeholder="Username" />
+  <input type="text" id="signup-email" placeholder="Email" />
+  <input type="password" id="signup-password" placeholder="Password" />
+  <input type="password" id="signup-confirm" placeholder="Confirm Password" />
+  <button class="form-btn" onclick="handleSignup()">Create Account</button>
+  <p class="login-text">Already have an account? <a href="#" onclick="switchToLogin()">Log in</a></p>
+</div>
 
-    <!-- Login Form -->
-    <div class="form-modal" id="login-form">
-      <h2>Log in</h2>
-      <input type="text" placeholder="Username" />
-      <input type="password" placeholder="Password" />
-      <button class="form-btn">Log in</button>
-    </div>
+
+    <!-- ✅ Login Form -->
+<div class="form-modal" id="login-form">
+  <h2>Log in</h2>
+  <input type="text" id="login-email" placeholder="Email" />
+  <input type="password" id="login-password" placeholder="Password" />
+  <button class="form-btn" onclick="handleLogin()">Log in</button>
+</div>
+
+<!-- ✅ Country Picker Box -->
+<div id="country-picker" class="country-box" style="display: none;">
+  <h2 class="picker-title">Where would you like to start your culinary journey?</h2>
+  <h1 class="picker-subtitle">Select your country</h1>
+  <div class="country-grid" id="country-grid"></div>
+</div>
+
+
   </main>
-
-  <script>
-    window.onload = function () {
-      document.getElementById("signup-form").style.display = 'none';
-      document.getElementById("login-form").style.display = 'none';
-    }
-
-    function toggleForm() {
-      document.getElementById("signup-form").style.display = 'block';
-      document.getElementById("login-form").style.display = 'none';
-    }
-
-    function switchToLogin() {
-      document.getElementById("signup-form").style.display = 'none';
-      document.getElementById("login-form").style.display = 'block';
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>

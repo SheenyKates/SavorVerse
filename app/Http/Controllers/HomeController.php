@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Http;
 
 use App\Services\HomeService;
 
@@ -23,5 +24,17 @@ class HomeController extends Controller
     {
         $trivia = $this->homeService->getTrivia();
         return response()->json(['trivia' => $trivia]);
-    }
+    } 
+
+    public function genderize($name)
+   {
+    $result = $this->homeService->detectGender($name);
+    return response()->json($result);
+   }
+
+    public function dailyMotivation()
+   {
+    return response()->json($this->homeService->getDailyMotivationalQuote());
+   }
+
 }

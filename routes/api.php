@@ -19,10 +19,13 @@ Route::get('/dish/{id}', [DishController::class, 'show']);
 Route::get('/explore/{country}/{category}', [ExploreController::class, 'byCountryAndCategory']);
 Route::get('/categories/for/{country}', [ExploreController::class, 'listCategories']);
 
-
 // 🔹 Home
 Route::get('/home/recent', [HomeController::class, 'recentDishes']);
 Route::get('/home/trivia', [HomeController::class, 'trivia']);
+// Genderize API (detect gender from name)
+Route::get('/genderize/{name}', [\App\Http\Controllers\HomeController::class, 'genderize']);
+Route::get('/quote/motivation', [HomeController::class, 'dailyMotivation']);
+
 
 // 🔹 REST Country Info
 Route::get('/country/info/{name}', [RestCountryController::class, 'show']);
@@ -42,3 +45,5 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+
