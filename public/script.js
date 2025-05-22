@@ -1,18 +1,23 @@
 const API_BASE = "http://localhost:8000/api";
-
+const SPOONACULAR_KEY = "7d26f3402798404ebfd1927d200cd2d7";
 // On load
-document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("signup-form").style.display = 'none';
-  document.getElementById("login-form").style.display = 'none';
-  document.getElementById("signup-success").style.display = 'none';
-});
+window.onload = function () {
+  const signupForm = document.getElementById("signup-form");
+  const loginForm = document.getElementById("login-form");
+  const successMsg = document.getElementById("signup-success");
+
+  if (signupForm) signupForm.style.display = 'none';
+  if (loginForm) loginForm.style.display = 'none';
+  if (successMsg) successMsg.style.display = 'none';
+};
 
 function toggleForm() {
-  console.log("toggleForm called"); // Debug line
+  console.log("toggleForm clicked");
   document.getElementById("signup-form").style.display = 'block';
   document.getElementById("login-form").style.display = 'none';
   document.getElementById("signup-success").style.display = 'none';
 }
+
 
 function switchToLogin() {
   document.getElementById("signup-form").style.display = 'none';
@@ -127,7 +132,7 @@ function loadCountries() {
             `;
             card.onclick = () => {
               localStorage.setItem("selectedCountry", area);
-              window.location.href = "home.html";
+              window.location.href = "welcome.html";
             };
             container.appendChild(card);
           });
@@ -168,63 +173,94 @@ function handleLogin() {
   });
 }
 
-// ✅ Redirect to home.html after 5 seconds (for welcome.html only)
 if (window.location.pathname.includes("welcome.html")) {
   setTimeout(() => {
     window.location.href = "home.html";
   }, 5000);
 }
 
-// === HOME PAGE LOGIC ===
-
 function loadUserHomeData() {
   const user = JSON.parse(localStorage.getItem("user"));
-  const country = localStorage.getItem("selectedCountry");
+  const rawCountry = localStorage.getItem("selectedCountry");
 
-  // 1. Gender Greeting
+  // Fix country name if needed
+  const fixMap = {
+    "Filipino": "Philippines",
+    "American": "United States",
+    "British": "United Kingdom",
+    "Chinese": "China",
+    "Dutch": "Netherlands",
+    "Egyptian": "Egypt",
+    "Greek": "Greece",
+    "Indian": "India",
+    "Irish": "Ireland",
+    "Italian": "Italy",
+    "Japanese": "Japan",
+    "Mexican": "Mexico",
+    "Moroccan": "Morocco",
+    "Spanish": "Spain",
+    "Thai": "Thailand",
+    "Turkish": "Turkey",
+    "Vietnamese": "Vietnam"
+  };
+  const country = fixMap[rawCountry] || rawCountry;
+
+  // 👤 Gender Greeting
   fetch(`https://api.genderize.io?name=${user.name.split(" ")[0]}`)
     .then(res => res.json())
     .then(data => {
       const gender = data.gender;
-      const greeting = gender === "female" ? "Welcome, foodie queen!" :
-                       gender === "male" ? "Welcome, food explorer!" :
-                       "Welcome, food explorer!";
+      const greeting = gender === "female"
+        ? "Welcome, foodie queen!"
+        : gender === "male"
+        ? "Welcome, food explorer!"
+        : "Welcome, food explorer!";
       document.getElementById("greeting").textContent = greeting;
     });
 
-  // 2. REST Countries Cultural Info
+  // 🌍 REST Countries Cultural Info
   fetch(`https://restcountries.com/v3.1/name/${country}?fullText=true`)
     .then(res => res.json())
     .then(data => {
+      if (!data || !data[0]) {
+        console.error("Country data not found");
+        return;
+      }
       const c = data[0];
       document.getElementById("country-name").textContent = c.name.common;
-      document.getElementById("flag").src = c.flags.svg;
+      document.getElementById("flag-img").src = c.flags?.svg || c.flags?.png || "";
       document.getElementById("capital").textContent = c.capital?.[0] || "-";
+      document.getElementById("region").textContent = c.region || "-";
+      document.getElementById("subregion").textContent = c.subregion || "-";
       document.getElementById("population").textContent = c.population.toLocaleString();
-      document.getElementById("region").textContent = c.region;
-      document.getElementById("subregion").textContent = c.subregion;
       document.getElementById("languages").textContent = Object.values(c.languages || {}).join(", ");
       const currency = Object.values(c.currencies || {})[0];
-      document.getElementById("currency").textContent = `${currency.name} (${currency.symbol})`;
+      document.getElementById("currency").textContent = currency
+        ? `${currency.name} (${currency.symbol})`
+        : "-";
       document.getElementById("timezones").textContent = c.timezones?.[0] || "-";
+    })
+    .catch(err => {
+      console.error("REST Countries API failed:", err);
     });
+}
+
 
   // 3. Spoonacular Trivia
   fetch(`https://api.spoonacular.com/food/trivia/random?apiKey=${SPOONACULAR_KEY}`)
     .then(res => res.json())
     .then(data => {
-      document.getElementById("trivia-text").textContent = data.text;
+      document.getElementById("food-trivia").textContent = data.text;
     });
 
-  // 4. ZenQuotes
-  fetch("https://zenquotes.io/api/random")
-    .then(res => res.json())
-    .then(data => {
-      const quote = data[0];
-      document.getElementById("quote-text").textContent = quote.q;
-      document.getElementById("quote-author").textContent = "- " + quote.a;
-    });
-}
+ fetch("https://api.allorigins.win/raw?url=https://zenquotes.io/api/random")
+  .then(res => res.json())
+  .then(data => {
+    const quote = data[0];
+    document.getElementById("quote-text").textContent = quote.q;
+    document.getElementById("quote-author").textContent = "- " + quote.a;
+  });
+
 
 // Auto-redirect welcome → home after 5s
 if (window.location.pathname.includes("welcome.html")) {
@@ -235,30 +271,62 @@ if (window.location.pathname.includes("welcome.html")) {
 
 if (document.querySelector(".category-wrapper")) {
   const API_BASE = "http://localhost:8000/api";
-  const selectedCountry = localStorage.getItem("selectedCountry") || "Philippines";
+  const rawCountry = localStorage.getItem("selectedCountry") || "Philippines";
+
+  // Country fix map
+  const fixMap = {
+    Filipino: "Philippines",
+    American: "United States",
+    British: "United Kingdom",
+    Chinese: "China",
+    Dutch: "Netherlands",
+    Egyptian: "Egypt",
+    French: "France",
+    Greek: "Greece",
+    Indian: "India",
+    Irish: "Ireland",
+    Italian: "Italy",
+    Jamaican: "Jamaica",
+    Japanese: "Japan",
+    Mexican: "Mexico",
+    Moroccan: "Morocco",
+    Russian: "Russia",
+    Spanish: "Spain",
+    Thai: "Thailand",
+    Turkish: "Turkey",
+    Vietnamese: "Vietnam"
+  };
+
+  const selectedCountry = fixMap[rawCountry] || rawCountry;
+  console.log("Using country:", selectedCountry); // ✅ debug
 
   function loadDishesByCategory(category) {
-    fetch(`${API_BASE}/recipes/country/${selectedCountry}/category/${category}`)
+    fetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
       .then(response => response.json())
       .then(data => {
         const container = document.getElementById("dish-results");
         container.innerHTML = "";
 
-        if (!data.meals || data.meals.length === 0) {
+        const meals = Array.isArray(data) ? data : data.meals;
+        if (!meals || meals.length === 0) {
           container.innerHTML = "<p>No dishes found.</p>";
           return;
         }
 
-        data.meals.forEach(meal => {
+        meals.forEach(meal => {
           const card = document.createElement("div");
           card.className = "dish-card";
           card.innerHTML = `
             <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
             <div class="dish-content">
               <h4>${meal.strMeal}</h4>
-              <p>${meal.strInstructions?.slice(0, 120) || "No description available"}...</p>
             </div>
           `;
+          card.onclick = () => {
+          localStorage.setItem("selectedMealId", meal.idMeal);
+          window.location.href = "dish.html";
+          };
+
           container.appendChild(card);
         });
       })
@@ -269,14 +337,13 @@ if (document.querySelector(".category-wrapper")) {
 
   document.querySelectorAll(".category-btn").forEach(button => {
     button.addEventListener("click", () => {
-      document.querySelectorAll(".category-btn").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
       button.classList.add("active");
-      const category = button.dataset.category;
-      loadDishesByCategory(category);
+      loadDishesByCategory(button.dataset.category);
     });
   });
 
-  // Load default category on page load
+  // Auto-load the active/default category
   const defaultCategory = document.querySelector(".category-btn.active")?.dataset.category;
   if (defaultCategory) {
     loadDishesByCategory(defaultCategory);
@@ -289,7 +356,6 @@ if (document.querySelector(".dish-container")) {
 
   if (!selectedDishName) {
     document.getElementById("dish-title").textContent = "Dish not found.";
-    return;
   }
 
   fetch(`${API_BASE}${selectedDishName}`)
@@ -317,6 +383,7 @@ if (document.querySelector(".dish-container")) {
       document.getElementById("dish-instructions").textContent = "Failed to load dish data.";
     });
 }
+
 
 // === FAVORITES PAGE ===
 if (document.getElementById("favorites-list")) {
@@ -382,3 +449,247 @@ function saveToFavorites(name, image, description) {
     });
 }
 
+if (window.location.pathname.includes("index.html")) {
+  loadCountries((countries) => {
+    const grid = document.getElementById("country-grid");
+    countries.forEach(({ area, flag }) => {
+      const card = document.createElement("div");
+      card.className = "country-card";
+      card.innerHTML = `<img class="country-flag" src="${flag}" alt="${area} flag"><span class="country-name">${area}</span>`;
+      card.onclick = () => {
+        localStorage.setItem("selectedCountry", area);
+        window.location.href = "welcome.html";
+      };
+      grid.appendChild(card);
+    });
+  });
+}
+
+if (window.location.pathname.includes("explore.html")) {
+  loadExploreCountries();
+}
+
+function loadExploreCountries() {
+  const fixMap = {
+    "American": "United States",
+    "British": "United Kingdom",
+    "Canadian": "Canada",
+    "Chinese": "China",
+    "Croatian": "Croatia",
+    "Dutch": "Netherlands",
+    "Egyptian": "Egypt",
+    "Filipino": "Philippines",
+    "French": "France",
+    "Greek": "Greece",
+    "Indian": "India",
+    "Irish": "Ireland",
+    "Italian": "Italy",
+    "Jamaican": "Jamaica",
+    "Japanese": "Japan",
+    "Kenyan": "Kenya",
+    "Malaysian": "Malaysia",
+    "Mexican": "Mexico",
+    "Moroccan": "Morocco",
+    "Polish": "Poland",
+    "Portuguese": "Portugal",
+    "Russian": "Russia",
+    "Spanish": "Spain",
+    "Thai": "Thailand",
+    "Tunisian": "Tunisia",
+    "Turkish": "Turkey",
+    "Ukrainian": "Ukraine",
+    "Uruguayan": "Uruguay",
+    "Vietnamese": "Vietnam"
+  };
+
+  fetch("https://www.themealdb.com/api/json/v1/1/list.php?a=list")
+    .then(res => res.json())
+    .then(areaData => {
+      const areas = areaData.meals.map(a => a.strArea);
+
+      fetch("https://restcountries.com/v3.1/all")
+        .then(res => res.json())
+        .then(restCountries => {
+          const grid = document.getElementById("explore-country-grid");
+          grid.innerHTML = "";
+
+          areas.forEach(area => {
+            const matchName = fixMap[area] || area;
+            const match = restCountries.find(
+              c => c.name.common.toLowerCase() === matchName.toLowerCase()
+            );
+
+            const flagUrl = match?.flags?.svg || match?.flags?.png || "https://via.placeholder.com/24";
+            const card = document.createElement("div");
+            card.className = "country-card";
+            card.innerHTML = `
+              <img class="country-flag" src="${flagUrl}" alt="${area} flag">
+              <span class="country-name">${area}</span>
+            `;
+            card.onclick = () => {
+              localStorage.setItem("exploreCountry", area);
+              window.location.href = "explore-category.html";
+            };
+            grid.appendChild(card);
+          });
+        });
+    });
+}
+
+// --- Step 2: Load categories + dishes for explore-category.html ---
+if (window.location.pathname.includes("explore-category.html")) {
+  const selectedCountry = localStorage.getItem("exploreCountry") || "Philippines";
+  document.getElementById("selected-country").textContent = selectedCountry;
+
+  function loadExploreDishes(category) {
+    fetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("explore-dish-results");
+        container.innerHTML = "";
+        if (!data.meals || data.meals.length === 0) {
+          container.innerHTML = "<p>No dishes found.</p>";
+          return;
+        }
+
+        data.meals.forEach(meal => {
+          const card = document.createElement("div");
+          card.className = "dish-card";
+          card.innerHTML = `
+            <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+            <div class="dish-content">
+              <h4>${meal.strMeal}</h4>
+            </div>
+          `;
+
+        card.onclick = () => {
+        localStorage.setItem("selectedMealId", meal.idMeal);
+        window.location.href = "dish.html";
+        };
+
+          container.appendChild(card);
+        });
+      });
+  }
+
+  document.querySelectorAll(".category-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      loadExploreDishes(btn.dataset.category);
+    });
+  });
+}
+
+if (window.location.pathname.includes("explore-category.html")) {
+  const selectedCountry = localStorage.getItem("exploreCountry") || "Philippines";
+  document.getElementById("selected-country").textContent = selectedCountry;
+
+  function loadDishesByCategory(category) {
+    const container = document.getElementById("explore-dish-results");
+    container.innerHTML = "Loading...";
+
+    fetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
+      .then(res => res.json())
+      .then(data => {
+        container.innerHTML = "";
+
+        const meals = Array.isArray(data) ? data : data.meals;
+        if (!meals || meals.length === 0) {
+          container.innerHTML = "<p>No dishes found.</p>";
+          return;
+        }
+
+        meals.forEach(meal => {
+          const card = document.createElement("div");
+          card.className = "dish-card";
+          card.innerHTML = `
+         <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+         <div class="dish-content">
+          <h4>${meal.strMeal}</h4>
+          </div>
+`         ;
+          card.onclick = () => {
+          localStorage.setItem("selectedMealId", meal.idMeal);
+          window.location.href = "dish.html";
+          };
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        console.error("Fetch error:", err);
+        container.innerHTML = "<p>Error loading dishes.</p>";
+      });
+  }
+
+  // Bind event to buttons
+  document.querySelectorAll(".category-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+      button.classList.add("active");
+      loadDishesByCategory(button.dataset.category);
+    });
+  });
+}
+
+ if (window.location.pathname.includes("home.html")) {
+  console.log("✅ Running loadUserHomeData()");
+  loadUserHomeData();
+}
+
+if (window.location.pathname.includes("dish.html")) {
+  const mealId = localStorage.getItem("selectedMealId");
+  if (!mealId) {
+    console.warn("No meal selected.");
+  } else {
+    fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`)
+      .then(res => res.json())
+      .then(data => {
+        const meal = data.meals[0];
+        document.getElementById("dish-img").src = meal.strMealThumb;
+        document.getElementById("dish-img").alt = meal.strMeal;
+        document.getElementById("dish-title").textContent = meal.strMeal;
+        document.getElementById("dish-instructions").textContent = meal.strInstructions;
+
+        const ingredientsBox = document.getElementById("ingredients-list");
+        ingredientsBox.innerHTML = "";
+
+        for (let i = 1; i <= 20; i++) {
+          const ingredient = meal[`strIngredient${i}`];
+          const measure = meal[`strMeasure${i}`];
+          if (ingredient && ingredient.trim() !== "") {
+            const item = document.createElement("li");
+            item.textContent = `${measure} ${ingredient}`;
+            ingredientsBox.appendChild(item);
+          }
+        }
+
+        // Bookmark icon logic
+        const bookmarkBtn = document.getElementById("bookmark-btn");
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        const isSaved = favorites.some(fav => fav.idMeal === meal.idMeal);
+
+        if (isSaved) {
+          bookmarkBtn.classList.add("saved");
+        }
+
+        bookmarkBtn.addEventListener("click", () => {
+          const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+          const index = favorites.findIndex(fav => fav.idMeal === meal.idMeal);
+
+          if (index !== -1) {
+            favorites.splice(index, 1);
+            bookmarkBtn.classList.remove("saved");
+          } else {
+            favorites.push(meal);
+            bookmarkBtn.classList.add("saved");
+          }
+
+          localStorage.setItem("favorites", JSON.stringify(favorites));
+        });
+      })
+      .catch(err => {
+        console.error("Error loading meal:", err);
+      });
+  }
+}
