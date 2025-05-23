@@ -763,7 +763,7 @@ blockquote {
 }
 
 .single-dish-container {
-  max-width: 560px; /* narrower container to match screenshot */
+  max-width: 650px; /* narrower container to match screenshot */
   margin: 40px auto;
   padding: 30px 30px 40px 30px;
   background-color: #e1f1ff;
@@ -789,8 +789,8 @@ blockquote {
 }
 
 .single-dish-img {
-  width: 140px;
-  height: 140px;
+  width: 200px;
+  height: 200px;
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -800,11 +800,11 @@ blockquote {
   margin-top: 10px;
   font-size: 20px;
   font-weight: 700;
-  color: white;
-  background-color: #56aeff;
+  color: var(--accent-navy);
+  background-color: white;
   border-radius: 8px;
   padding: 6px 20px;
-  width: 140px;
+  width: 150px;
   text-align: center;
   box-shadow: 0 2px 6px rgba(86, 174, 255, 0.7);
 }
@@ -814,18 +814,27 @@ blockquote {
   top: 15px;
   right: 15px;
   width: 32px;
-  height: 56px;
-  border-radius: 2px;
-  background: transparent url("fav.png") no-repeat center;
+  height: 32px;           
+  background: url("fav.png") no-repeat center center;
   background-size: contain;
+
+  border: none !important;        
+  outline: none !important;     
+  padding: 0 !important;       
+  margin: 0 !important;         
+  background-color: transparent !important; 
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
   cursor: pointer;
-  outline: none;
-  z-index: 10;
+  box-shadow: none !important;
 }
 
+/* Saved state */
 #bookmark-btn.saved {
   background-image: url("favfill.png");
 }
+
 
 /* Container for ingredients and instructions side by side */
 .single-details {
@@ -891,4 +900,48 @@ blockquote {
 
 .single-back-btn:hover {
   background-color: #2e95e3;
+}
+
+.user-icon {
+  position: relative;
+  display: inline-block;
+}
+
+#user-img {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+#user-dropdown {
+  display: none;
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  min-width: 120px;
+  z-index: 1000;
+}
+
+#logout-btn {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 600;
+  color: #1025a1;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#logout-btn:hover {
+  background-color:#1025a1;
+
+  border-radius: 5px;
+  color: white;
+
 }

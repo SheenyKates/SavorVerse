@@ -8,6 +8,7 @@ use App\Http\Controllers\DishController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\RestCountryController;
 use App\Http\Controllers\AuthController;
+use Illuminate\Http\Request;
 
 // 🔹 Country
 Route::get('/countries', [CountryController::class, 'index']);
@@ -42,8 +43,19 @@ Route::prefix('favorites')->group(function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::get('/ping', function () {
+    return response()->json(['message' => 'pong']);
+});
+
+Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+});
+
+Route::get('/test', function () {
+    return response()->json(['message' => 'test works']);
 });
 
 

@@ -1,5 +1,15 @@
 const API_BASE = "http://localhost:8000/api";
-const SPOONACULAR_KEY = "7d26f3402798404ebfd1927d200cd2d7";
+const SPOONACULAR_KEY = "b8b6af3bed874fd483b78e5eecdc4e47";
+
+
+function updateFavoritesBadge() {
+  const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+  const badge = document.getElementById("favorites-badge");
+  if (!badge) return;
+  badge.textContent = favorites.length;
+  badge.style.display = favorites.length > 0 ? "inline-block" : "none";
+}
+
 // On load
 window.onload = function () {
   const signupForm = document.getElementById("signup-form");
@@ -385,85 +395,60 @@ if (document.querySelector(".dish-container")) {
 }
 
 
-// === FAVORITES PAGE ===
+// Load and display favorites from localStorage on the favorites page
 if (document.getElementById("favorites-list")) {
-  fetch(`${API_BASE}/favorites`)
-    .then(res => res.json())
-    .then(data => {
-      const list = document.getElementById("favorites-list");
-      list.innerHTML = "";
+  function loadFavoritesList() {
+    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    const list = document.getElementById("favorites-list");
+    list.innerHTML = "";
 
-      if (!data || data.length === 0) {
-        list.innerHTML = "<p>No favorites saved yet.</p>";
-        return;
-      }
+    if (favorites.length === 0) {
+      list.textContent = "No favorites saved yet.";
+      return;
+    }
 
-      data.forEach(dish => {
-        const card = document.createElement("div");
-        card.className = "favorite-card";
-        card.innerHTML = `
-          <img src="${dish.image}" alt="${dish.name}">
-          <div class="favorite-content">
-            <h3>${dish.name}</h3>
-            <p>${dish.description}</p>
-          </div>
-          <img src="bookmark.png" class="bookmark-icon" alt="Remove" title="Remove from Favorites" />
-        `;
-
-        // Handle delete (click on bookmark icon)
-        card.querySelector(".bookmark-icon").addEventListener("click", () => {
-          if (confirm(`Remove "${dish.name}" from favorites?`)) {
-            fetch(`${API_BASE}/favorites/remove`, {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ name: dish.name }) // Adjust key if you're using ID
-            })
-            .then(res => res.json())
-            .then(() => card.remove())
-            .catch(err => console.error("Remove failed:", err));
-          }
-        });
-
-        list.appendChild(card);
-      });
-    })
-    .catch(err => {
-      console.error("Failed to load favorites:", err);
-    });
-}
-
-// === ADD TO FAVORITES FUNCTION ===
-// Call this from any page to save a dish
-function saveToFavorites(name, image, description) {
-  fetch(`${API_BASE}/favorites/add`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, image, description })
-  })
-    .then(res => res.json())
-    .then(() => {
-      alert(`Saved "${name}" to favorites!`);
-    })
-    .catch(err => {
-      console.error("Save failed:", err);
-    });
-}
-
-if (window.location.pathname.includes("index.html")) {
-  loadCountries((countries) => {
-    const grid = document.getElementById("country-grid");
-    countries.forEach(({ area, flag }) => {
+    favorites.forEach(meal => {
       const card = document.createElement("div");
-      card.className = "country-card";
-      card.innerHTML = `<img class="country-flag" src="${flag}" alt="${area} flag"><span class="country-name">${area}</span>`;
-      card.onclick = () => {
-        localStorage.setItem("selectedCountry", area);
-        window.location.href = "welcome.html";
-      };
-      grid.appendChild(card);
+      card.className = "favorite-card";
+      card.innerHTML = `
+        <img src="${meal.strMealThumb}" alt="${meal.strMeal}" />
+        <div class="favorite-content">
+          <h3>${meal.strMeal}</h3>
+          <p>${meal.strArea} - ${meal.strCategory}</p>
+          <a href="dish.html" data-id="${meal.idMeal}" class="view-details">View Details</a>
+        </div>
+      `;
+      list.appendChild(card);
     });
-  });
+
+    // Add event listener for view details links
+    document.querySelectorAll(".view-details").forEach(link => {
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        const mealId = e.target.getAttribute("data-id");
+        localStorage.setItem("selectedMealId", mealId);
+        window.location.href = "dish.html";
+      });
+    });
+
+    // Add event listener for remove buttons
+    document.querySelectorAll(".remove-fav-btn").forEach(button => {
+      button.addEventListener("click", e => {
+        const mealId = e.target.getAttribute("data-id");
+        if (confirm("Remove this dish from favorites?")) {
+          let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+          favorites = favorites.filter(fav => fav.idMeal !== mealId);
+          localStorage.setItem("favorites", JSON.stringify(favorites));
+          loadFavoritesList(); // Reload list
+          updateFavoritesBadge(); // Update badge count if you have one
+        }
+      });
+    });
+  }
+
+  loadFavoritesList();
 }
+
 
 if (window.location.pathname.includes("explore.html")) {
   loadExploreCountries();
@@ -693,3 +678,26 @@ if (window.location.pathname.includes("dish.html")) {
       });
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const userImg = document.getElementById("user-img");
+  const userDropdown = document.getElementById("user-dropdown");
+  const logoutBtn = document.getElementById("logout-btn");
+
+  if (!userImg || !userDropdown || !logoutBtn) return; // safety check
+
+  userImg.addEventListener("click", (e) => {
+    e.stopPropagation();
+    userDropdown.style.display = userDropdown.style.display === "block" ? "none" : "block";
+  });
+
+  window.addEventListener("click", () => {
+    userDropdown.style.display = "none";
+  });
+
+  logoutBtn.addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "index.html";
+  });
+});
+
