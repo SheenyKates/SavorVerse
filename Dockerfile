@@ -1,4 +1,3 @@
-# Use PHP 8.3-apache (or 8.2-apache if preferred)
 FROM php:8.3-apache
 
 # Install system dependencies
@@ -17,6 +16,9 @@ WORKDIR /var/www/html
 
 # Copy application
 COPY . /var/www/html
+
+# Set correct document root to Laravel's public directory
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
