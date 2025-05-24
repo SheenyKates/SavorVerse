@@ -2,4 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Currently not using web routes
+Route::get('/', function () {
+    return view('welcome'); // returns the default Laravel welcome page
+});
