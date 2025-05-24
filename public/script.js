@@ -2,6 +2,15 @@ const API_BASE = "http://localhost:8000/api";
 const SPOONACULAR_KEY = "b8b6af3bed874fd483b78e5eecdc4e47";
 
 
+function safeSetTextContent(elementId, text) {
+  const el = document.getElementById(elementId);
+  if (el) {
+    el.textContent = text;
+  } else {
+    console.error(`Element with ID '${elementId}' not found.`);
+  }
+}
+
 function updateFavoritesBadge() {
   const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
   const badge = document.getElementById("favorites-badge");
@@ -166,22 +175,36 @@ function handleLogin() {
   fetch(`${API_BASE}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ email, password }),
+    credentials: "include"  // important if Laravel Sanctum uses cookies for auth
   })
-  .then((res) => res.json())
-  .then((data) => {
-    if (data.user) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-      showCountryPicker(); // ✅ THIS is the correct next step
-    } else {
-      alert(data.message || "Login failed.");
-    }
-  })
-  .catch((err) => {
-    console.error("Login error:", err);
-    alert("Something went wrong during login.");
-  });
+  .then(async (res) => {
+  const contentType = res.headers.get("content-type");
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HTTP error ${res.status}: ${text}`);
+  }
+  if (contentType && contentType.includes("application/json")) {
+    return res.json();
+  } else {
+    const text = await res.text();
+    throw new Error(`Expected JSON but got: ${text}`);
+  }
+})
+.then((data) => {
+  if (data.user) {
+    localStorage.setItem("user", JSON.stringify(data.user));
+    showCountryPicker();
+  } else {
+    alert(data.message || "Login failed.");
+  }
+})
+.catch((err) => {
+  console.error("Login error:", err);
+  alert("Login failed: " + err.message);
+});
 }
+
 
 if (window.location.pathname.includes("welcome.html")) {
   setTimeout(() => {
@@ -255,21 +278,30 @@ function loadUserHomeData() {
     });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  // Only run if quote elements exist
+  if (document.getElementById("quote-text") && document.getElementById("quote-author")) {
+    fetch("https://api.allorigins.win/raw?url=https://zenquotes.io/api/random")
+      .then(res => res.json())
+      .then(data => {
+        const quote = data[0];
+        document.getElementById("quote-text").textContent = quote.q;
+        document.getElementById("quote-author").textContent = "- " + quote.a;
+      })
+      .catch(err => console.error("Quote fetch error:", err));
+  }
 
-  // 3. Spoonacular Trivia
-  fetch(`https://api.spoonacular.com/food/trivia/random?apiKey=${SPOONACULAR_KEY}`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("food-trivia").textContent = data.text;
-    });
+  // Only run if trivia element exists
+  if (document.getElementById("food-trivia")) {
+    fetch(`https://api.spoonacular.com/food/trivia/random?apiKey=${SPOONACULAR_KEY}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("food-trivia").textContent = data.text;
+      })
+      .catch(err => console.error("Trivia fetch error:", err));
+  }
+});
 
- fetch("https://api.allorigins.win/raw?url=https://zenquotes.io/api/random")
-  .then(res => res.json())
-  .then(data => {
-    const quote = data[0];
-    document.getElementById("quote-text").textContent = quote.q;
-    document.getElementById("quote-author").textContent = "- " + quote.a;
-  });
 
 
 // Auto-redirect welcome → home after 5s
@@ -700,4 +732,3 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "index.html";
   });
 });
-

@@ -38,6 +38,13 @@ Route::prefix('favorites')->group(function () {
     Route::delete('/remove', [FavoriteController::class, 'destroy']);
 });
 
+Route::get('/check-api', function() {
+    return response()->json(['status' => 'api routes loaded']);
+});
+
+
+
+
 //AuthController
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -47,7 +54,7 @@ Route::get('/ping', function () {
     return response()->json(['message' => 'pong']);
 });
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) {
         return $request->user();
