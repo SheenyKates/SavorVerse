@@ -1,6 +1,22 @@
 const API_BASE = "http://localhost:8000/api";
-const SPOONACULAR_KEY = "b8b6af3bed874fd483b78e5eecdc4e47";
 
+
+function getAuthToken() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  return user?.token || "";
+}
+
+function authorizedFetch(url, options = {}) {
+  const authToken = getAuthToken();
+  return fetch(url, {
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+      'Authorization': `Bearer ${authToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+}
 
 function safeSetTextContent(elementId, text) {
   const el = document.getElementById(elementId);
@@ -175,36 +191,35 @@ function handleLogin() {
   fetch(`${API_BASE}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-    credentials: "include"  // important if Laravel Sanctum uses cookies for auth
+    body: JSON.stringify({ email, password })
   })
   .then(async (res) => {
-  const contentType = res.headers.get("content-type");
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`HTTP error ${res.status}: ${text}`);
-  }
-  if (contentType && contentType.includes("application/json")) {
-    return res.json();
-  } else {
-    const text = await res.text();
-    throw new Error(`Expected JSON but got: ${text}`);
-  }
-})
-.then((data) => {
-  if (data.user) {
-    localStorage.setItem("user", JSON.stringify(data.user));
-    showCountryPicker();
-  } else {
-    alert(data.message || "Login failed.");
-  }
-})
-.catch((err) => {
-  console.error("Login error:", err);
-  alert("Login failed: " + err.message);
-});
+    const contentType = res.headers.get("content-type");
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`HTTP error ${res.status}: ${text}`);
+    }
+    if (contentType && contentType.includes("application/json")) {
+      return res.json();
+    } else {
+      const text = await res.text();
+      throw new Error(`Expected JSON but got: ${text}`);
+    }
+  })
+  .then((data) => {
+    if (data.user && data.token) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("authToken", data.token);  // 🔒 Save token for future use
+      showCountryPicker();
+    } else {
+      alert(data.message || "Login failed.");
+    }
+  })
+  .catch((err) => {
+    console.error("Login error:", err);
+    alert("Login failed: " + err.message);
+  });
 }
-
 
 if (window.location.pathname.includes("welcome.html")) {
   setTimeout(() => {
@@ -343,7 +358,7 @@ if (document.querySelector(".category-wrapper")) {
   console.log("Using country:", selectedCountry); // ✅ debug
 
   function loadDishesByCategory(category) {
-    fetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
+    authorizedFetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
       .then(response => response.json())
       .then(data => {
         const container = document.getElementById("dish-results");
@@ -412,7 +427,7 @@ if (document.querySelector(".dish-container")) {
       const ingredientsBox = document.getElementById("ingredients-list");
       for (let i = 1; i <= 20; i++) {
         const ingredient = dish[`strIngredient${i}`];
-        const measure = dish[`strMeasure${i}`];
+        const measure = dish[`strMeasure${i}`]; 
         if (ingredient && ingredient.trim()) {
           const item = document.createElement("div");
           item.textContent = `${ingredient}${measure ? `: ${measure}` : ''}`;
@@ -559,7 +574,7 @@ if (window.location.pathname.includes("explore-category.html")) {
   document.getElementById("selected-country").textContent = selectedCountry;
 
   function loadExploreDishes(category) {
-    fetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
+    authorizedFetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById("explore-dish-results");
@@ -578,16 +593,15 @@ if (window.location.pathname.includes("explore-category.html")) {
               <h4>${meal.strMeal}</h4>
             </div>
           `;
-
-        card.onclick = () => {
-        localStorage.setItem("selectedMealId", meal.idMeal);
-        window.location.href = "dish.html";
-        };
-
+          card.onclick = () => {
+            localStorage.setItem("selectedMealId", meal.idMeal);
+            window.location.href = "dish.html";
+          };
           container.appendChild(card);
         });
-      });
-  }
+      })
+      .catch(err => console.error("Error fetching dishes:", err));
+}
 
   document.querySelectorAll(".category-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -606,7 +620,7 @@ if (window.location.pathname.includes("explore-category.html")) {
     const container = document.getElementById("explore-dish-results");
     container.innerHTML = "Loading...";
 
-    fetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
+    authorizedFetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
       .then(res => res.json())
       .then(data => {
         container.innerHTML = "";

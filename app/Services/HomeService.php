@@ -14,15 +14,27 @@ class HomeService
     }
 
     public function getTrivia(): string
-    {
-        $apiKey = env('SPOONACULAR_KEY');
-        if (!$apiKey) {
-            return 'Missing Spoonacular API key';
-        }
+{
+    $apiKey = 'b8b6af3bed874fd483b78e5eecdc4e47'; // Use your working key
 
-        $response = Http::get("https://api.spoonacular.com/food/trivia/random?apiKey={$apiKey}");
-        return $response->json()['text'] ?? 'No trivia available right now.';
+    try {
+        $response = \Illuminate\Support\Facades\Http::withHeaders([
+            'x-api-key' => $apiKey
+        ])->get('https://api.spoonacular.com/food/trivia/random');
+
+        if ($response->successful()) {
+            return $response->json()['text'] ?? 'No trivia available right now.';
+        } else {
+            Log::error('Spoonacular API failed. Status: ' . $response->status() . '. Body: ' . $response->body());
+            return 'No trivia available right now.';
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred: ' . $e->getMessage());
+        return 'No trivia available right now.';
     }
+}
+
+
 
     // ✅ Genderize API integration
     public function detectGender(string $name): array
