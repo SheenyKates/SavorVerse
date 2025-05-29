@@ -1,13 +1,17 @@
-const API_BASE = "http://localhost:8000/api";
-
+const BACKEND_API_URL = "https://savorverse-production.up.railway.app/api/";
 
 function getAuthToken() {
   const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || !user.token) {
+    console.error("No user token found");
+  }
   return user?.token || "";
 }
 
+
 function authorizedFetch(url, options = {}) {
   const authToken = getAuthToken();
+  console.log("Authorization token:", authToken);  // Check token value
   return fetch(url, {
     ...options,
     headers: {
@@ -17,6 +21,7 @@ function authorizedFetch(url, options = {}) {
     }
   });
 }
+
 
 function safeSetTextContent(elementId, text) {
   const el = document.getElementById(elementId);
@@ -620,9 +625,12 @@ if (window.location.pathname.includes("explore-category.html")) {
     const container = document.getElementById("explore-dish-results");
     container.innerHTML = "Loading...";
 
+    console.log("Fetching dishes for category:", category);  // Debugging log
+
     authorizedFetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
       .then(res => res.json())
       .then(data => {
+        console.log("Fetched data:", data);  // Debugging log
         container.innerHTML = "";
 
         const meals = Array.isArray(data) ? data : data.meals;
@@ -651,7 +659,8 @@ if (window.location.pathname.includes("explore-category.html")) {
         console.error("Fetch error:", err);
         container.innerHTML = "<p>Error loading dishes.</p>";
       });
-  }
+}
+
 
   // Bind event to buttons
   document.querySelectorAll(".category-btn").forEach(button => {
