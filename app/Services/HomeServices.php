@@ -15,7 +15,7 @@ class HomeService
 
     public function getTrivia(): string
     {
-        $apiKey = env('SPOONACULAR_API_KEY');
+        $apiKey = env('SPOONACULAR_KEY');
         if (!$apiKey) {
             return 'Missing Spoonacular API key';
         }

@@ -42,9 +42,6 @@ Route::get('/check-api', function() {
     return response()->json(['status' => 'api routes loaded']);
 });
 
-
-
-
 //AuthController
 
 Route::post('/register', [AuthController::class, 'register']);

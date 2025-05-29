@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Http;
+use App\Services\CountryService;
 
 class CountryController extends Controller
 {
+    protected CountryService $countryService;
+
+    public function __construct(CountryService $countryService)
+    {
+        $this->countryService = $countryService;
+    }
+
     public function index()
     {
-        $response = Http::get('https://www.themealdb.com/api/json/v1/1/list.php?a=list');
-
-        return response()->json($response->json()['meals']);
+        $countries = $this->countryService->getCountries();
+        return response()->json($countries);
     }
 }
-
