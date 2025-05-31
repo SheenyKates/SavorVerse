@@ -1,9 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
-// For Laravel UI:
-Auth::routes();
-
-// OR for Laravel Breeze/Fortify/Jetstream, ensure proper setup.
-
+Route::get('/', function () {
+    return view('welcome'); // or 'home' if you have a home.blade.php
+});
