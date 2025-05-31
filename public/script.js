@@ -1,4 +1,6 @@
-const BACKEND_API_URL = "https://savorverse-production.up.railway.app/api/";
+const API_BASE = "https://savorverse-production.up.railway.app/api/";
+const user = JSON.parse(localStorage.getItem("user"));
+
 
 function getAuthToken() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -363,39 +365,77 @@ if (document.querySelector(".category-wrapper")) {
   console.log("Using country:", selectedCountry); // ✅ debug
 
   function loadDishesByCategory(category) {
-    authorizedFetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
-      .then(response => response.json())
-      .then(data => {
+    const selectedCountry = localStorage.getItem("selectedCountry");
+    if (!selectedCountry) {
+        alert("Please select a country first.");
+        window.location.href = "countrySelection.html";  // Redirect to selection page
+        return;
+    }
+
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+        alert("Please log in to view dishes.");
+        window.location.href = "login.html";  // Redirect to login page
+        return;
+    }
+
+    console.log(`Using country: ${selectedCountry}`);
+    console.log(`Authorization token: ${token}`);
+
+    fetch(`${API_BASE}/explore/${selectedCountry}/${category}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 401) {
+                alert("Unauthorized. Please log in again.");
+                window.location.href = "login.html";
+                return Promise.reject(new Error("Unauthorized"));
+            } else if (response.status === 404) {
+                throw new Error("Category or country not found.");
+            } else {
+                throw new Error(`HTTP error ${response.status}`);
+            }
+        }
+        return response.json();
+    })
+    .then(data => {
         const container = document.getElementById("dish-results");
         container.innerHTML = "";
 
         const meals = Array.isArray(data) ? data : data.meals;
         if (!meals || meals.length === 0) {
-          container.innerHTML = "<p>No dishes found.</p>";
-          return;
+            container.innerHTML = "<p>No dishes found.</p>";
+            return;
         }
 
         meals.forEach(meal => {
-          const card = document.createElement("div");
-          card.className = "dish-card";
-          card.innerHTML = `
-            <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
-            <div class="dish-content">
-              <h4>${meal.strMeal}</h4>
-            </div>
-          `;
-          card.onclick = () => {
-          localStorage.setItem("selectedMealId", meal.idMeal);
-          window.location.href = "dish.html";
-          };
-
-          container.appendChild(card);
+            const card = document.createElement("div");
+            card.className = "dish-card";
+            card.innerHTML = `
+                <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+                <div class="dish-content">
+                    <h4>${meal.strMeal}</h4>
+                </div>
+            `;
+            card.onclick = () => {
+                localStorage.setItem("selectedMealId", meal.idMeal);
+                window.location.href = "dish.html";
+            };
+            container.appendChild(card);
         });
-      })
-      .catch(err => {
+    })
+    .catch(err => {
         console.error("Error fetching dishes:", err);
-      });
-  }
+        alert(`Failed to load dishes: ${err.message}`);
+    });
+}
+
+
 
   document.querySelectorAll(".category-btn").forEach(button => {
     button.addEventListener("click", () => {

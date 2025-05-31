@@ -49,3 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/remove/{id}', [FavoriteController::class, 'destroy']);
     });
 });
+
+Route::get('/health', function () {
+    return response()->json(['status' => 'ok']);
+});
