@@ -1,15 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
-Route::get('/fix-laravel', function () {
-    Artisan::call('config:clear');
-    Artisan::call('cache:clear');
-    Artisan::call('route:clear');
-    Artisan::call('view:clear');
-    Artisan::call('config:cache');
-    Artisan::call('migrate', ['--force' => true]); // Runs pending migrations
-    return response()->json(['status' => 'Fixed Laravel!']);
-});
+// For Laravel UI:
+Auth::routes();
+
+// OR for Laravel Breeze/Fortify/Jetstream, ensure proper setup.
 
