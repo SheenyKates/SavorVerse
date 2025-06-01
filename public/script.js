@@ -1,4 +1,5 @@
 const API_BASE = "https://savorverse-production.up.railway.app/api";
+const SPOONACULAR_KEY = "7d26f3402798404ebfd1927d200cd2d7";
 const user = JSON.parse(localStorage.getItem("user"));
 
 
@@ -556,7 +557,10 @@ if (window.location.pathname.includes("explore.html")) {
   loadExploreCountries();
 }
 
+
+
 function loadExploreCountries() {
+   const selectedCountry = localStorage.getItem("exploreCountry") || "Philippines";
   const fixMap = {
     "American": "United States",
     "British": "United Kingdom",
@@ -621,15 +625,13 @@ function loadExploreCountries() {
           });
         });
     });
-}
-
 // --- Step 2: Load categories + dishes for explore-category.html ---
 if (window.location.pathname.includes("explore-category.html")) {
-  const selectedCountry = localStorage.getItem("exploreCountry") || "Philippines";
+  const apiCountry = fixMap[selectedCountry] || selectedCountry;
   document.getElementById("selected-country").textContent = selectedCountry;
 
   function loadExploreDishes(category) {
-    authorizedFetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
+     authorizedFetch(`${API_BASE}/explore/${apiCountry}/${category}`)
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById("explore-dish-results");
@@ -666,6 +668,7 @@ if (window.location.pathname.includes("explore-category.html")) {
     });
   });
 }
+}
 
 if (window.location.pathname.includes("explore-category.html")) {
   const selectedCountry = localStorage.getItem("exploreCountry") || "Philippines";
@@ -682,6 +685,7 @@ if (window.location.pathname.includes("explore-category.html")) {
        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
       return res.json();
        })
+       
       .then(data => {
         console.log("Fetched data:", data);  // Debugging log
         container.innerHTML = "";
