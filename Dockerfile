@@ -22,9 +22,6 @@ RUN composer install --no-dev --optimize-autoloader
 # Copy the rest of the application
 COPY . .
 
-# Install JS dependencies and build assets
-RUN npm install && npm run build
-
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
  && chmod -R 775 storage bootstrap/cache
