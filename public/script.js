@@ -625,6 +625,7 @@ function loadExploreCountries() {
           });
         });
     });
+    
 // --- Step 2: Load categories + dishes for explore-category.html ---
 if (window.location.pathname.includes("explore-category.html")) {
   const apiCountry = fixMap[selectedCountry] || selectedCountry;
