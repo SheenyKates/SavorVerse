@@ -35,6 +35,11 @@ RUN composer install --no-dev --optimize-autoloader
 # Copy rest of the project
 COPY . .
 
+# Increase PHP memory limit
+RUN echo "memory_limit = 512M" > /usr/local/etc/php/conf.d/memory-limit.ini
+
+RUN composer install --no-dev --optimize-autoloader
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage bootstrap/cache
