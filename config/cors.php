@@ -4,11 +4,11 @@ return [
     'paths' => ['api/*'],
     'allowed_methods' => ['*'],
     'allowed_origins' => [
-        'http://localhost:8000',      // Add this
-        'http://127.0.0.1:8000',      // Add this
-        'https://savorverse-production.up.railway.app', // Optional for production
-        'http://localhost:5500',      // Keep if you also use this
-        'http://127.0.0.1:5500',      // Keep if you also use this
+        'http://localhost:8000',    
+        'http://127.0.0.1:8000',  
+        'https://savorverse-production.up.railway.app', 
+        'http://localhost:5500',     
+        'http://127.0.0.1:5500',     
     ],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
