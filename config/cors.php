@@ -8,7 +8,7 @@ return [
         'http://127.0.0.1:8000',
         'http://localhost:5500',
         'http://127.0.0.1:5500',
-        'https://savorverse.onrender.com',  // ✅ Add your frontend Render domain
+         'https://savorverse-production.up.railway.app',
     ],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
