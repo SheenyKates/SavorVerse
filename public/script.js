@@ -53,32 +53,21 @@ window.onload = function () {
   if (successMsg) successMsg.style.display = 'none';
 };
 
-window.onload = function () {
-  const signupForm = document.getElementById("signup-form");
-  const loginForm = document.getElementById("login-form");
-  const successMsg = document.getElementById("signup-success");
-
-  if (signupForm) signupForm.style.display = 'none';
-  if (loginForm) loginForm.style.display = 'none';
-  if (successMsg) successMsg.style.display = 'none';
-};
-
-// 🔄 Toggle to signup form
-window.toggleForm = function () {
+function toggleForm() {
   console.log("toggleForm clicked");
   document.getElementById("signup-form").style.display = 'block';
   document.getElementById("login-form").style.display = 'none';
   document.getElementById("signup-success").style.display = 'none';
-};
+}
 
-// 🔄 Switch to login form
-window.switchToLogin = function () {
+
+function switchToLogin() {
   document.getElementById("signup-form").style.display = 'none';
   document.getElementById("login-form").style.display = 'block';
-};
+  // Leave success message visible
+}
 
-// 🔐 Handle Signup with Authorization
-window.handleSignup = function () {
+function handleSignup() {
   const name = document.getElementById("signup-name").value;
   const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
@@ -89,18 +78,9 @@ window.handleSignup = function () {
     return;
   }
 
-  const token = localStorage.getItem("authToken"); // 🔑 Use stored token from login or elsewhere
-  if (!token) {
-    alert("You need to be authorized to register. Please log in first.");
-    return;
-  }
-
   fetch(`${API_BASE}/register`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}` // 🔒 Include the token here
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       name,
       email,
@@ -114,7 +94,7 @@ window.handleSignup = function () {
       const message = document.getElementById("signup-success");
       message.textContent = "✅ Account successfully created! Please log in.";
       message.style.display = "block";
-      window.switchToLogin();
+      switchToLogin();
     } else {
       alert(data.message || "Sign up failed.");
     }
@@ -123,45 +103,7 @@ window.handleSignup = function () {
     console.error("Signup error:", err);
     alert("Something went wrong during sign up.");
   });
-};
-
-// 🔑 Handle Login with Token
-window.handleLogin = function () {
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
-
-  fetch(`${API_BASE}/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  })
-  .then((res) => {
-    if (!res.ok) {
-      throw new Error("Login failed. Please check your credentials.");
-    }
-    return res.json();
-  })
-  .then((data) => {
-    if (data.token) {
-      localStorage.setItem("authToken", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      alert("Login successful!");
-
-      window.authHeaders = {
-        "Authorization": `Bearer ${data.token}`,
-        "Content-Type": "application/json"
-      };
-
-      window.location.href = "home.html"; // Replace with your post-login page
-    } else {
-      alert(data.message || "Invalid login response.");
-    }
-  })
-  .catch((err) => {
-    console.error("Login error:", err);
-    alert(err.message || "Something went wrong during login.");
-  });
-};
+}
 
 function showCountryPicker() {
   document.getElementById("signup-form").style.display = "none";
@@ -232,7 +174,7 @@ function loadCountries() {
             `;
             card.onclick = () => {
               localStorage.setItem("selectedCountry", area);
-              window.location.href = "/greeting";
+              window.location.href = "welcome.html";
             };
             container.appendChild(card);
           });
@@ -286,14 +228,13 @@ function handleLogin() {
   });
 }
 
-if (window.location.pathname.includes("/greeting")) {
+if (window.location.pathname.includes("welcome.html")) {
   setTimeout(() => {
-    window.location.href = "/home";  
+    window.location.href = "home.html";
   }, 5000);
 }
 
-
-window.loadUserHomeData = function() {
+function loadUserHomeData() {
   const user = JSON.parse(localStorage.getItem("user"));
   const rawCountry = localStorage.getItem("selectedCountry");
 
@@ -385,12 +326,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-if (window.location.pathname.includes("/greeting")) {
+// Auto-redirect welcome → home after 5s
+if (window.location.pathname.includes("welcome.html")) {
   setTimeout(() => {
-    window.location.href = "/home"; 
+    window.location.href = "home.html";
   }, 5000);
 }
-
 
 if (document.querySelector(".category-wrapper")) {
   const API_BASE = "http://localhost:8000/api";
@@ -423,18 +364,18 @@ if (document.querySelector(".category-wrapper")) {
   const selectedCountry = fixMap[rawCountry] || rawCountry;
   console.log("Using country:", selectedCountry); // ✅ debug
 
-  window.loadDishesByCategory = function(category) {
+  function loadDishesByCategory(category) {
     const selectedCountry = localStorage.getItem("selectedCountry");
     if (!selectedCountry) {
         alert("Please select a country first.");
-        window.location.href = "/guestindex";
+        window.location.href = "countrySelection.html";  // Redirect to selection page
         return;
     }
 
     const token = localStorage.getItem("authToken");
     if (!token) {
         alert("Please log in to view dishes.");
-        window.location.href = "/";  // Redirect to login page
+        window.location.href = "login.html";  // Redirect to login page
         return;
     }
 
@@ -452,7 +393,7 @@ if (document.querySelector(".category-wrapper")) {
         if (!response.ok) {
             if (response.status === 401) {
                 alert("Unauthorized. Please log in again.");
-                window.location.href = "/";
+                window.location.href = "login.html";
                 return Promise.reject(new Error("Unauthorized"));
             } else if (response.status === 404) {
                 throw new Error("Category or country not found.");
@@ -483,7 +424,7 @@ if (document.querySelector(".category-wrapper")) {
             `;
             card.onclick = () => {
                 localStorage.setItem("selectedMealId", meal.idMeal);
-                window.location.href = "/dish";
+                window.location.href = "dish.html";
             };
             container.appendChild(card);
         });
@@ -548,7 +489,7 @@ if (document.querySelector(".dish-container")) {
 
 // Load and display favorites from localStorage on the favorites page
 if (document.getElementById("favorites-list")) {
-  window.loadFavoritesList = function() {
+  function loadFavoritesList() {
     const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
     const list = document.getElementById("favorites-list");
     list.innerHTML = "";
@@ -566,7 +507,7 @@ if (document.getElementById("favorites-list")) {
         <div class="favorite-content">
           <h3>${meal.strMeal}</h3>
           <p>${meal.strArea} - ${meal.strCategory}</p>
-          <a href="/dish" data-id="${meal.idMeal}" class="view-details">View Details</a>
+          <a href="dish.html" data-id="${meal.idMeal}" class="view-details">View Details</a>
         </div>
       `;
       list.appendChild(card);
@@ -578,7 +519,7 @@ if (document.getElementById("favorites-list")) {
         e.preventDefault();
         const mealId = e.target.getAttribute("data-id");
         localStorage.setItem("selectedMealId", mealId);
-        window.location.href = "/dish";
+        window.location.href = "dish.html";
       });
     });
 
@@ -601,11 +542,11 @@ if (document.getElementById("favorites-list")) {
 }
 
 
-if (window.location.pathname.includes("/explore")) {
+if (window.location.pathname.includes("explore.html")) {
   loadExploreCountries();
 }
 
-window.loadExploreCountries = function() {
+function loadExploreCountries() {
   const fixMap = {
     "American": "United States",
     "British": "United Kingdom",
@@ -664,7 +605,7 @@ window.loadExploreCountries = function() {
             `;
             card.onclick = () => {
               localStorage.setItem("exploreCountry", area);
-              window.location.href = "/explore-category";
+              window.location.href = "explore-category.html";
             };
             grid.appendChild(card);
           });
@@ -673,11 +614,11 @@ window.loadExploreCountries = function() {
 }
 
 // --- Step 2: Load categories + dishes for explore-category.html ---
-if (window.location.pathname.includes("/explore-category")) {
+if (window.location.pathname.includes("explore-category.html")) {
   const selectedCountry = localStorage.getItem("exploreCountry") || "Philippines";
   document.getElementById("selected-country").textContent = selectedCountry;
 
- window.loadExploreDishes = function(category) {
+  function loadExploreDishes(category) {
     authorizedFetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
       .then(res => res.json())
       .then(data => {
@@ -699,7 +640,7 @@ if (window.location.pathname.includes("/explore-category")) {
           `;
           card.onclick = () => {
             localStorage.setItem("selectedMealId", meal.idMeal);
-            window.location.href = "/dish";
+            window.location.href = "dish.html";
           };
           container.appendChild(card);
         });
@@ -716,11 +657,11 @@ if (window.location.pathname.includes("/explore-category")) {
   });
 }
 
-if (window.location.pathname.includes("/explore-category")) {
+if (window.location.pathname.includes("explore-category.html")) {
   const selectedCountry = localStorage.getItem("exploreCountry") || "Philippines";
   document.getElementById("selected-country").textContent = selectedCountry;
 
-  window.loadDishesByCategory = function(category) {
+  function loadDishesByCategory(category) {
     const container = document.getElementById("explore-dish-results");
     container.innerHTML = "Loading...";
 
@@ -749,7 +690,7 @@ if (window.location.pathname.includes("/explore-category")) {
 `         ;
           card.onclick = () => {
           localStorage.setItem("selectedMealId", meal.idMeal);
-          window.location.href = "/dish";
+          window.location.href = "dish.html";
           };
           container.appendChild(card);
         });
@@ -771,12 +712,12 @@ if (window.location.pathname.includes("/explore-category")) {
   });
 }
 
- if (window.location.pathname.includes("/home")) {
+ if (window.location.pathname.includes("home.html")) {
   console.log("✅ Running loadUserHomeData()");
   loadUserHomeData();
 }
 
-if (window.location.pathname.includes("/dish")) {
+if (window.location.pathname.includes("dish.html")) {
   const mealId = localStorage.getItem("selectedMealId");
   if (!mealId) {
     console.warn("No meal selected.");
@@ -851,6 +792,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   logoutBtn.addEventListener("click", () => {
     localStorage.clear();
-    window.location.href = "/index";
+    window.location.href = "index.html";
   });
 });

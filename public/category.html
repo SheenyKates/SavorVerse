@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SavorVerse - Category</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo-area">
+      <img src="logo2.png" alt="SavorVerse Logo" class="logo" />
+      <div class="text-group">
+        <h1 class="app-title">Savor<span class="highlight">Verse</span></h1>
+        <p class="tagline">Every craving. Every cuisine. All in one <span class="highlight">verse</span>.</p>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="home.html" class="nav-item">HOME</a>
+      <a href="category.html" class="nav-item">CATEGORY</a>
+      <a href="favorites.html" class="nav-item">FAVORITES</a>
+      <a href="explore.html" class="nav-item active">EXPLORE MORE</a>
+      <a href="about.html" class="nav-item">ABOUT US</a>
+     <div class="user-icon">
+  <img src="user.png" alt="User" id="user-img" />
+  <div id="user-dropdown">
+    <button id="logout-btn">Logout</button>
+  </div>
+</div>
+  </nav>
+</header>
+
+
+  <!-- Category Section -->
+  <main class="main-content">
+    <section class="category-wrapper">
+      <h2>Choose a Category</h2>
+      <div class="category-buttons">
+        <button class="category-btn" data-category="Pork">PORK</button>
+        <button class="category-btn active" data-category="Beef">BEEF</button>
+        <button class="category-btn" data-category="Chicken">CHICKEN</button>
+        <button class="category-btn" data-category="Seafood">SEAFOOD</button>
+        <button class="category-btn" data-category="Vegetarian">VEGETARIAN</button>
+      </div>
+
+      <div class="dish-results" id="dish-results">
+        <!-- Dynamic dish cards will go here -->
+      </div>
+    </section>
+  </main>
+
+   <footer class="footer">
+    <div class="footer-left">
+      <p>Connect with Us:<br />
+        Follow us on social media for the latest recipes, food culture stories, and cooking inspiration:</p>
+    </div>
+     <p class="copyright">@2025 SavorVerse. All Rights Reserved.</p>
+    <div class="footer-right">
+      <p><img src="fb.png" class="icon" /> Facebook: [facebook.com/SavorVerse]</p>
+      <p><img src="insta.png" class="icon" /> Instagram: [instagram.com/SavorVerse]</p>
+      <p><img src="twit.png" class="icon" /> Twitter: [twitter.com/SavorVerse]</p>
+    </div>
+     </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

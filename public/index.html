@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SavorVerse</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-area">
+      <img src="logo2.png" alt="SavorVerse Logo" class="logo" />
+      <div class="text-group">
+        <h1 class="app-title">Savor<span class="highlight">Verse</span></h1>
+        <p class="tagline">Every craving. Every cuisine. All in one <span class="highlight">verse</span>.</p>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-item active">HOME</a>
+      <a href="guestabout.html" class="nav-item">ABOUT US</a>
+      <button class="login-btn" onclick="toggleForm()">Log in / Sign up</button>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <div class="hero-overlay">
+  <div class="hero-text-box">
+    <h2 class="hero-text">Where every country<br>serves a story on a plate.</h2>
+  </div>
+</div>
+
+<p id="signup-success" style="display: none; color: green; text-align: center;">
+  ✅ Account successfully created! Please log in.
+</p>
+
+
+<!-- ✅ Sign-Up Form with IDs -->
+<div class="form-modal" id="signup-form">
+  <h2>Sign up</h2>
+  <input type="text" id="signup-name" placeholder="Username" />
+  <input type="text" id="signup-email" placeholder="Email" />
+  <input type="password" id="signup-password" placeholder="Password" />
+  <input type="password" id="signup-confirm" placeholder="Confirm Password" />
+  <button class="form-btn" onclick="handleSignup()">Create Account</button>
+  <p class="login-text">Already have an account? <a href="#" onclick="switchToLogin()">Log in</a></p>
+</div>
+
+
+    <!-- ✅ Login Form -->
+<div class="form-modal" id="login-form">
+  <h2>Log in</h2>
+  <input type="text" id="login-email" placeholder="Email" />
+  <input type="password" id="login-password" placeholder="Password" />
+  <button class="form-btn" onclick="handleLogin()">Log in</button>
+</div>
+
+<!-- ✅ Country Picker Box -->
+<div id="country-picker" class="country-box" style="display: none;">
+  <h2 class="picker-title">Where would you like to start your culinary journey?</h2>
+  <h1 class="picker-subtitle">Select your country</h1>
+  <div class="country-grid" id="country-grid"></div>
+</div>
+
+
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
