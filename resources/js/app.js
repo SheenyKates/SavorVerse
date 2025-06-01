@@ -53,7 +53,17 @@ window.onload = function () {
   if (successMsg) successMsg.style.display = 'none';
 };
 
-// Expose toggleForm globally
+window.onload = function () {
+  const signupForm = document.getElementById("signup-form");
+  const loginForm = document.getElementById("login-form");
+  const successMsg = document.getElementById("signup-success");
+
+  if (signupForm) signupForm.style.display = 'none';
+  if (loginForm) loginForm.style.display = 'none';
+  if (successMsg) successMsg.style.display = 'none';
+};
+
+// 🔄 Toggle to signup form
 window.toggleForm = function () {
   console.log("toggleForm clicked");
   document.getElementById("signup-form").style.display = 'block';
@@ -61,13 +71,13 @@ window.toggleForm = function () {
   document.getElementById("signup-success").style.display = 'none';
 };
 
-// Expose switchToLogin globally
+// 🔄 Switch to login form
 window.switchToLogin = function () {
   document.getElementById("signup-form").style.display = 'none';
   document.getElementById("login-form").style.display = 'block';
 };
 
-// Expose handleSignup globally
+// 🔐 Handle Signup with Authorization
 window.handleSignup = function () {
   const name = document.getElementById("signup-name").value;
   const email = document.getElementById("signup-email").value;
@@ -79,9 +89,18 @@ window.handleSignup = function () {
     return;
   }
 
+  const token = localStorage.getItem("authToken"); // 🔑 Use stored token from login or elsewhere
+  if (!token) {
+    alert("You need to be authorized to register. Please log in first.");
+    return;
+  }
+
   fetch(`${API_BASE}/register`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}` // 🔒 Include the token here
+    },
     body: JSON.stringify({
       name,
       email,
@@ -95,7 +114,7 @@ window.handleSignup = function () {
       const message = document.getElementById("signup-success");
       message.textContent = "✅ Account successfully created! Please log in.";
       message.style.display = "block";
-      window.switchToLogin();  // Make sure it calls the global version
+      window.switchToLogin();
     } else {
       alert(data.message || "Sign up failed.");
     }
@@ -103,6 +122,44 @@ window.handleSignup = function () {
   .catch((err) => {
     console.error("Signup error:", err);
     alert("Something went wrong during sign up.");
+  });
+};
+
+// 🔑 Handle Login with Token
+window.handleLogin = function () {
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+
+  fetch(`${API_BASE}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  })
+  .then((res) => {
+    if (!res.ok) {
+      throw new Error("Login failed. Please check your credentials.");
+    }
+    return res.json();
+  })
+  .then((data) => {
+    if (data.token) {
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      alert("Login successful!");
+
+      window.authHeaders = {
+        "Authorization": `Bearer ${data.token}`,
+        "Content-Type": "application/json"
+      };
+
+      window.location.href = "home.html"; // Replace with your post-login page
+    } else {
+      alert(data.message || "Invalid login response.");
+    }
+  })
+  .catch((err) => {
+    console.error("Login error:", err);
+    alert(err.message || "Something went wrong during login.");
   });
 };
 
