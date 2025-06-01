@@ -8,6 +8,11 @@ Route::get('/', function () {
     return response()->file(public_path('index.html'));
 });
 
+Route::get('/login', function () {
+    return response()->file(public_path('index.html'));
+})->name('login');
+
+
 Route::get('/greeting', function () {
     return response()->file(public_path('greeting.html'));  // Replace with actual file if exists
 });
