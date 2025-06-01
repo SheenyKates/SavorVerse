@@ -1,4 +1,4 @@
-const API_BASE = "/api";
+const API_BASE = "https://savorverse-production.up.railway.app/api";
 const user = JSON.parse(localStorage.getItem("user"));
 
 
