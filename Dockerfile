@@ -1,4 +1,4 @@
-# Use PHP-Apache image
+# Use official PHP-Apache image
 FROM php:8.2-apache
 
 # Enable Apache mod_rewrite
@@ -25,18 +25,19 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www && chmod -R 775 storage bootstrap/cache
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 775 storage bootstrap/cache
 
 # Set Apache public folder
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/public|g' /etc/apache2/sites-available/000-default.conf \
     && echo '<Directory /var/www/public>\nOptions Indexes FollowSymLinks\nAllowOverride All\nRequire all granted\n</Directory>' >> /etc/apache2/apache2.conf
 
-# Listen on the port Railway assigns dynamically
+# Use Railway's dynamic port
 ENV PORT=8080
-RUN sed -i "s/80/\${PORT}/" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
+RUN sed -i "s/80/${PORT}/" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 
 # Expose the dynamic port
 EXPOSE 8080
 
-# Start Apache in foreground
+# Start Apache
 CMD ["apache2-foreground"]
