@@ -28,11 +28,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy project files
-COPY . .
-
-# Install PHP dependencies
+# Copy composer files and install dependencies
+COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader
+
+# Copy rest of the project
+COPY . .
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www \
@@ -42,9 +43,8 @@ RUN chown -R www-data:www-data /var/www \
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/public|g' /etc/apache2/sites-available/000-default.conf \
     && echo '<Directory /var/www/public>\nOptions Indexes FollowSymLinks\nAllowOverride All\nRequire all granted\n</Directory>' >> /etc/apache2/apache2.conf
 
-# Expose port (Render dynamically sets $PORT)
+# Expose port (Railway sets $PORT)
 EXPOSE 80
 
-# Start Apache
-CMD ["apache2-foreground"]
-
+# Start Apache and set to Railway dynamic port
+CMD ["sh", "-c", "sed -i \"s/80/${PORT}/g\" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf && apache2-foreground"]
