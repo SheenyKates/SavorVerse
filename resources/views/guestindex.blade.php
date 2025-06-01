@@ -59,6 +59,7 @@
         <h1 class="picker-subtitle">Select your country</h1>
         <div class="country-grid" id="country-grid"></div>
     </div>
+    
 </main>
 </body>
 </html>
