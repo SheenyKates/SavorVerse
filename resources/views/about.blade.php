@@ -23,7 +23,7 @@
         <a href="{{ url('/explore') }}" class="nav-item">EXPLORE MORE</a>
         <a href="{{ url('/about') }}" class="nav-item">ABOUT US</a> 
         <div class="user-icon">
-            <img src="{{ asset('user.png') }}" alt="User" id="user-img" />
+            <img src="{{ asset('user.png') }}" alt="User" id="user-img" />a
             <div id="user-dropdown">
                 <button id="logout-btn">Logout</button>
             </div>

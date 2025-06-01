@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'guestindex');
-Route::view('/greeting', 'greeting'); // Landing page (previously index.html)
+Route::view('/greeting', 'greeting'); 
 Route::view('/home', 'home');
 Route::view('/about', 'about');
 Route::view('/category', 'category');
