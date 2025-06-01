@@ -1,5 +1,5 @@
-const API_BASE = "https://savorverse.onrender.com/api";
-const user = JSON.parse(localStorage.getItem("user"));
+const API_BASE = "http://localhost:8000/api";
+
 
 
 function getAuthToken() {
