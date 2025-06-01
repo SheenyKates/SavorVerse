@@ -53,21 +53,22 @@ window.onload = function () {
   if (successMsg) successMsg.style.display = 'none';
 };
 
-function toggleForm() {
+// Expose toggleForm globally
+window.toggleForm = function () {
   console.log("toggleForm clicked");
   document.getElementById("signup-form").style.display = 'block';
   document.getElementById("login-form").style.display = 'none';
   document.getElementById("signup-success").style.display = 'none';
-}
+};
 
-
-function switchToLogin() {
+// Expose switchToLogin globally
+window.switchToLogin = function () {
   document.getElementById("signup-form").style.display = 'none';
   document.getElementById("login-form").style.display = 'block';
-  // Leave success message visible
-}
+};
 
-function handleSignup() {
+// Expose handleSignup globally
+window.handleSignup = function () {
   const name = document.getElementById("signup-name").value;
   const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
@@ -94,7 +95,7 @@ function handleSignup() {
       const message = document.getElementById("signup-success");
       message.textContent = "✅ Account successfully created! Please log in.";
       message.style.display = "block";
-      switchToLogin();
+      window.switchToLogin();  // Make sure it calls the global version
     } else {
       alert(data.message || "Sign up failed.");
     }
@@ -103,7 +104,7 @@ function handleSignup() {
     console.error("Signup error:", err);
     alert("Something went wrong during sign up.");
   });
-}
+};
 
 function showCountryPicker() {
   document.getElementById("signup-form").style.display = "none";
@@ -235,7 +236,7 @@ if (window.location.pathname.includes("/greeting")) {
 }
 
 
-function loadUserHomeData() {
+window.loadUserHomeData = function() {
   const user = JSON.parse(localStorage.getItem("user"));
   const rawCountry = localStorage.getItem("selectedCountry");
 
@@ -365,7 +366,7 @@ if (document.querySelector(".category-wrapper")) {
   const selectedCountry = fixMap[rawCountry] || rawCountry;
   console.log("Using country:", selectedCountry); // ✅ debug
 
-  function loadDishesByCategory(category) {
+  window.loadDishesByCategory = function(category) {
     const selectedCountry = localStorage.getItem("selectedCountry");
     if (!selectedCountry) {
         alert("Please select a country first.");
@@ -490,7 +491,7 @@ if (document.querySelector(".dish-container")) {
 
 // Load and display favorites from localStorage on the favorites page
 if (document.getElementById("favorites-list")) {
-  function loadFavoritesList() {
+  window.loadFavoritesList = function() {
     const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
     const list = document.getElementById("favorites-list");
     list.innerHTML = "";
@@ -547,7 +548,7 @@ if (window.location.pathname.includes("/explore")) {
   loadExploreCountries();
 }
 
-function loadExploreCountries() {
+window.loadExploreCountries = function() {
   const fixMap = {
     "American": "United States",
     "British": "United Kingdom",
@@ -619,7 +620,7 @@ if (window.location.pathname.includes("/explore-category")) {
   const selectedCountry = localStorage.getItem("exploreCountry") || "Philippines";
   document.getElementById("selected-country").textContent = selectedCountry;
 
-  function loadExploreDishes(category) {
+ window.loadExploreDishes = function(category) {
     authorizedFetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
       .then(res => res.json())
       .then(data => {
@@ -662,7 +663,7 @@ if (window.location.pathname.includes("/explore-category")) {
   const selectedCountry = localStorage.getItem("exploreCountry") || "Philippines";
   document.getElementById("selected-country").textContent = selectedCountry;
 
-  function loadDishesByCategory(category) {
+  window.loadDishesByCategory = function(category) {
     const container = document.getElementById("explore-dish-results");
     container.innerHTML = "Loading...";
 
