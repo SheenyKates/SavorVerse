@@ -1,33 +1,35 @@
+# Use an official PHP image with Apache
 FROM php:8.3-apache
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
-
-# Enable Apache Rewrite Module
-RUN a2enmod rewrite
-
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application
-COPY . /var/www/html
+# Install system dependencies
+RUN apt-get update && apt-get install -y git zip unzip libzip-dev && \
+    docker-php-ext-install pdo pdo_mysql zip
 
-# Set correct document root to Laravel's public directory
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy application files
+COPY . /var/www/html/
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Set permissions
+RUN chmod -R 775 storage bootstrap/cache
 
-# Expose port
+# Set web root
+RUN rm -rf /var/www/html/public && ln -s /var/www/html/public /var/www/html/public_html
+
+# Enable Apache rewrite module
+RUN a2enmod rewrite
+
+# Copy custom Apache config
+COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
+
+# Expose port 80
 EXPOSE 80
 
 # Start Apache
