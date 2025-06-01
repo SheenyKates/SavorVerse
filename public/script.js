@@ -42,7 +42,6 @@ function updateFavoritesBadge() {
   badge.style.display = favorites.length > 0 ? "inline-block" : "none";
 }
 
-// On load
 window.onload = function () {
   const signupForm = document.getElementById("signup-form");
   const loginForm = document.getElementById("login-form");
@@ -60,11 +59,9 @@ function toggleForm() {
   document.getElementById("signup-success").style.display = 'none';
 }
 
-
 function switchToLogin() {
   document.getElementById("signup-form").style.display = 'none';
   document.getElementById("login-form").style.display = 'block';
-  // Leave success message visible
 }
 
 function handleSignup() {
@@ -88,9 +85,25 @@ function handleSignup() {
       password_confirmation: confirmPassword
     })
   })
-  .then((res) => res.json())
+  .then(async (res) => {
+    const contentType = res.headers.get("content-type");
+    if (!res.ok) {
+      const text = await res.text();  // Read the raw response
+      console.error(`HTTP error ${res.status}:`, text);
+      alert(`Signup failed: Server error ${res.status}`);
+      throw new Error(`HTTP error ${res.status}`);
+    }
+    if (contentType && contentType.includes("application/json")) {
+      return res.json();
+    } else {
+      const text = await res.text();
+      console.error("Expected JSON but got:", text);
+      alert("Signup failed: Received unexpected response from server.");
+      throw new Error("Invalid response format");
+    }
+  })
   .then((data) => {
-    if (data.user) {
+    if (data && data.user) {
       const message = document.getElementById("signup-success");
       message.textContent = "✅ Account successfully created! Please log in.";
       message.style.display = "block";
@@ -101,7 +114,7 @@ function handleSignup() {
   })
   .catch((err) => {
     console.error("Signup error:", err);
-    alert("Something went wrong during sign up.");
+    alert("Something went wrong during sign up. " + err.message);
   });
 }
 
