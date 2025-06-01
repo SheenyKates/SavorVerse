@@ -1,4 +1,4 @@
-const API_BASE = "https://savorverse.onrender.com";
+const API_BASE = "https://savorverse.onrender.com/api/";
 const user = JSON.parse(localStorage.getItem("user"));
 
 
