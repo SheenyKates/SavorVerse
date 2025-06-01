@@ -447,9 +447,6 @@ if (document.querySelector(".category-wrapper")) {
         alert(`Failed to load dishes: ${err.message}`);
     });
 }
-
-
-
   document.querySelectorAll(".category-btn").forEach(button => {
     button.addEventListener("click", () => {
       document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
@@ -681,7 +678,10 @@ if (window.location.pathname.includes("explore-category.html")) {
     console.log("Fetching dishes for category:", category);  // Debugging log
 
     authorizedFetch(`${API_BASE}/explore/${selectedCountry}/${category}`)
-      .then(res => res.json())
+      .then(res => {
+       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+      return res.json();
+       })
       .then(data => {
         console.log("Fetched data:", data);  // Debugging log
         container.innerHTML = "";
