@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'paths' => ['api/*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
     'allowed_methods' => ['*'],
     'allowed_origins' => [
-        'http://localhost:8000',    
-        'http://127.0.0.1:8000',  
-        'https://savorverse-production.up.railway.app', 
-        'http://localhost:5500',     
-        'http://127.0.0.1:5500',     
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+        'http://localhost:5500',
+        'http://127.0.0.1:5500',
+        'https://savorverse.onrender.com',  // ✅ Add your frontend Render domain
     ],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],

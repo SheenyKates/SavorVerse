@@ -36,15 +36,17 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage bootstrap/cache
+    && chmod -R 775 storage bootstrap/cache
 
-# Set Apache public folder
+# Set Apache public folder and allow overrides
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/public|g' /etc/apache2/sites-available/000-default.conf \
     && echo '<Directory /var/www/public>\nOptions Indexes FollowSymLinks\nAllowOverride All\nRequire all granted\n</Directory>' >> /etc/apache2/apache2.conf
 
-# Expose port (Render dynamically sets $PORT)
+# Replace the default Apache port with Railway's $PORT if set, or default to 80
+RUN echo "Listen ${PORT:-80}" > /etc/apache2/ports.conf
+
+# Expose the port
 EXPOSE 80
 
-# Start Apache
-CMD ["apache2-foreground"]
-
+# Start Apache, binding to the correct port
+CMD ["/bin/bash", "-c", "apachectl -D FOREGROUND"]
