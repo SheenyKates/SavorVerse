@@ -347,7 +347,7 @@ if (window.location.pathname.includes("welcome.html")) {
 }
 
 if (document.querySelector(".category-wrapper")) {
-  const API_BASE = "http://localhost:8000/api";
+  const API_BASE = "https://savorverse-production.up.railway.app/api";
   const rawCountry = localStorage.getItem("selectedCountry") || "Philippines";
 
   // Country fix map
