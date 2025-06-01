@@ -1,4 +1,4 @@
-# Use an official PHP image with Apache
+# Use official PHP Apache image
 FROM php:8.3-apache
 
 # Set working directory
@@ -11,18 +11,18 @@ RUN apt-get update && apt-get install -y git zip unzip libzip-dev libpng-dev && 
 # Enable Apache rewrite module
 RUN a2enmod rewrite
 
-# Copy custom Apache config
+# Copy Apache config
 COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
 
 # Copy application files
 COPY . /var/www/html/
 
-# Install Composer
+# Install Composer dependencies
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permissions
-RUN chmod -R 775 storage bootstrap/cache
+# Set permissions for Laravel
+RUN chown -R www-data:www-data /var/www/html && chmod -R 775 storage bootstrap/cache
 
 # Expose port 80
 EXPOSE 80
